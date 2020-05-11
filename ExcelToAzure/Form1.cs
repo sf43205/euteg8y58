@@ -52,6 +52,19 @@ namespace ExcelToAzure
             if (Import == null)
                 Import = new ImportPage();
             Navigate(Import);
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    var filePath = openFileDialog1.FileName;
+                    Xls.GetArrayFromFile(filePath);
+                }
+                catch (SecurityException ex)
+                {
+                    MessageBox.Show($"Security error.\n\nError message: {ex.Message}\n\n" +
+                    $"Details:\n\n{ex.StackTrace}");
+                }
+            }
         }
 
         private void btnData_Click(object sender, EventArgs e)
