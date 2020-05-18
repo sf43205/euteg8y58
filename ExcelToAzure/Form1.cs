@@ -17,22 +17,28 @@ namespace ExcelToAzure
 {
     public partial class Form1 : Form
     {
-        Form Login, Data, Import;
-        static Control Dash;
+        public static Form1 Main;
+        public static Control Dash, Login, Data, Import;
 
-        private OpenFileDialog openFileDialog1;
         public Form1()
         {
             InitializeComponent();
+            Main = this;
             Dash = Dashboard;
-            openFileDialog1 = new OpenFileDialog()
-            {
-                FileName = "Select a Excel file",
-                Filter = "Text files (*.xls)|*.xls",
-                Title = "Open Excel file"
-            };
-
-            Login = new LoginPage();
+            CheckShow();
+            Login = GetActiveControl(new LoginPage());
+        }
+        public void CheckShow()
+        {
+            bool visible = LoginPage.LoggedIn;
+            ImportMenu.Visible = visible;
+            DataMenu.Visible = visible;
+        }
+        Control GetActiveControl(Form f)
+        {
+            f.TopLevel = false;
+            //f.Show();
+            return f;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -43,43 +49,36 @@ namespace ExcelToAzure
         private void btnLogin_Click(object sender, EventArgs e)
         {
             if (Login == null)
-                Login = new LoginPage();
+                Login = GetActiveControl(new LoginPage());
             Navigate(Login);
         }
 
         private void btnImport_Click(object sender, EventArgs e)
         {
             if (Import == null)
-                Import = new ImportPage();
+                Import = GetActiveControl(new ImportPage());
             Navigate(Import);
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                try
-                {
-                    var filePath = openFileDialog1.FileName;
-                    Xls.GetArrayFromFile(filePath);
-                }
-                catch (SecurityException ex)
-                {
-                    MessageBox.Show($"Security error.\n\nError message: {ex.Message}\n\n" +
-                    $"Details:\n\n{ex.StackTrace}");
-                }
-            }
+            
         }
 
         private void btnData_Click(object sender, EventArgs e)
         {
             Dashboard.BackColor = Color.White;
-            Xls.ShowDataInNewApp();
+            //Xls.ShowDataInNewApp();
         }
 
-        private static void Navigate (Form form)
+        public static void Navigate (Control cx)
         {
-            form.TopLevel = false;
-            Dash.Controls.Clear();
-            Dash.Controls.Add(form);
-            form.Show();
-            form.Dock = DockStyle.Fill;
+            var c = LoginPage.LoggedIn ? cx : Login;
+            Dash.SafeInvoke(x =>
+            {
+                //form.TopLevel = false;
+                //form.AutoSize = true;
+                x.Controls.Clear();
+                x.Controls.Add(c);
+                c.Dock = DockStyle.Fill;
+                c.Show();
+            });
         }
     }
 }

@@ -12,6 +12,7 @@ namespace ExcelToAzure
 {
     public partial class LoginPage : Form
     {
+        public static bool LoggedIn = false;
         public LoginPage()
         {
             InitializeComponent();
@@ -26,11 +27,27 @@ namespace ExcelToAzure
                 btnLogin.BackColor = Color.PaleTurquoise;
                 //await Task.Delay(2000);
                 //MessageBox.Show("Failed to LOGIN");
-                SQL.Connect();
-
+                if (SQL.Connect())
+                {
+                    LoggedIn = true;
+                    Form1.Main.CheckShow();
+                    MessageBox.Show("Success!", "Login");
+                }
+                else
+                {
+                    LoggedIn = false;
+                    Form1.Main.CheckShow();
+                    MessageBox.Show("Failed!", "Login");
+                }
                 btnLogin.Text = "LOGIN";
                 btnLogin.BackColor = Color.Teal;
             }
         }
+
+        private void LoginPage_Resize(object sender, EventArgs e)
+        {
+            //Flow.Dock = DockStyle.Fill;
+        }
+
     }
 }
