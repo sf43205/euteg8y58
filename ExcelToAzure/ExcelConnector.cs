@@ -87,7 +87,7 @@ namespace ExcelToAzure
             }
         }
 
-        public static void ShowDataInNewApp()
+        public static void ShowDataInNewApp(List<Record> records)
         {
             Workbooks objBooks;
             Sheets objSheets;
@@ -106,40 +106,63 @@ namespace ExcelToAzure
                 //Get the range where the starting cell has the address
                 //m_sStartingCell and its dimensions are m_iNumRows x m_iNumCols.
                 range = objSheet.get_Range("A1", Missing.Value);
-                range = range.get_Resize(5, 5);
+                range = range.get_Resize(records.Count() + 1, 23);
 
                 if (true)
                 {
                     //Create an array.
-                    double[,] saRet = new double[5, 5];
+                    object [,] saRet = new object [records.Count() + 1, 23];
+                    //Header
+                    saRet[0, 0] = "project.name";
+                    saRet[0, 1] = "phase";
+                    saRet[0, 2] = "location.code";
+                    saRet[0, 3] = "location.name";
+                    saRet[0, 4] = "location.bsf";
+                    saRet[0, 5] = "level1";
+                    saRet[0, 6] = "name1";
+                    saRet[0, 7] = "level2";
+                    saRet[0, 8] = "name2";
+                    saRet[0, 9] = "level3";
+                    saRet[0, 10] = "name3";
+                    saRet[0, 11] = "level4";
+                    saRet[0, 12] = "name4";
+                    saRet[0, 13] = "template.code";
+                    saRet[0, 14] = "description";
+                    saRet[0, 15] = "qty";
+                    saRet[0, 16] = "ut";
+                    saRet[0, 17] = "price";
+                    saRet[0, 18] = "total";
+                    saRet[0, 19] = "comments";
+                    saRet[0, 20] = "csi_code";
+                    saRet[0, 21] = "trade_code";
+                    saRet[0, 22] = "estimate_category";
 
                     //Fill the array.
-                    for (long iRow = 0; iRow < 5; iRow++)
+                    for (int iRow = 0; iRow < records.Count(); iRow++)
                     {
-                        for (long iCol = 0; iCol < 5; iCol++)
-                        {
-                            //Put a counter in the cell.
-                            saRet[iRow, iCol] = iRow * iCol;
-                        }
-                    }
-
-                    //Set the range value to the array.
-                    range.set_Value(Missing.Value, saRet);
-                }
-
-                else
-                {
-                    //Create an array.
-                    string[,] saRet = new string[5, 5];
-
-                    //Fill the array.
-                    for (long iRow = 0; iRow < 5; iRow++)
-                    {
-                        for (long iCol = 0; iCol < 5; iCol++)
-                        {
-                            //Put the row and column address in the cell.
-                            saRet[iRow, iCol] = iRow.ToString() + "|" + iCol.ToString();
-                        }
+                        saRet[iRow + 1, 0] = records[iRow].location.project.name;
+                        saRet[iRow + 1, 1] = records[iRow].phase.phase;
+                        saRet[iRow + 1, 2] = records[iRow].location.code;
+                        saRet[iRow + 1, 3] = records[iRow].location.name;
+                        saRet[iRow + 1, 4] = records[iRow].location.bsf;
+                        saRet[iRow + 1, 5] = records[iRow].template.level.level1;
+                        saRet[iRow + 1, 6] = records[iRow].template.level.name1;
+                        saRet[iRow + 1, 7] = records[iRow].template.level.level2;
+                        saRet[iRow + 1, 8] = records[iRow].template.level.name2;
+                        saRet[iRow + 1, 9] = records[iRow].template.level.level3;
+                        saRet[iRow + 1, 10] = records[iRow].template.level.name3;
+                        saRet[iRow + 1, 11] = records[iRow].template.level.level4;
+                        saRet[iRow + 1, 12] = records[iRow].template.level.name4;
+                        saRet[iRow + 1, 13] = records[iRow].template.code;
+                        saRet[iRow + 1, 14] = records[iRow].template.description;
+                        saRet[iRow + 1, 15] = records[iRow].qty;
+                        saRet[iRow + 1, 16] = records[iRow].template.ut;
+                        saRet[iRow + 1, 17] = records[iRow].price;
+                        saRet[iRow + 1, 18] = records[iRow].total;
+                        saRet[iRow + 1, 19] = records[iRow].comments;
+                        saRet[iRow + 1, 20] = records[iRow].csi_code;
+                        saRet[iRow + 1, 21] = records[iRow].trade_code;
+                        saRet[iRow + 1, 22] = records[iRow].estimate_category;
                     }
 
                     //Set the range value to the array.

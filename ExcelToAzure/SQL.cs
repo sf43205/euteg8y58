@@ -99,7 +99,7 @@ namespace ExcelToAzure
             try
             {
                 commandtext = commandtext.Trim(new char[] { ' ', ';' });
-                commandtext += " FOR JSON AUTO;";
+                commandtext += " FOR JSON PATH;";
                 using (var connection = Connection())
                 using (var command = new SqlCommand(commandtext, connection))
                 {
@@ -167,6 +167,66 @@ namespace ExcelToAzure
                 success = false;
             }
             return success;
+        }
+
+        internal static List<Record> GetAllRecords()
+        {
+            var all = new List<Record>();
+            string cmdtxt = "select (select r.*, " +
+                            "price.unit_price as price, " +
+                            "(select * from project_phase where id = r.phase_id for json auto) as phase, " +
+                            "(select l.*, project.* from location l left join project on l.project_id = project.id where l.id = r.location_id for json auto) as location, " +
+                            "(select t.*, level.* from template t left join levels level on t.level_id = level.id where t.id = r.template_id for json auto) as template " +
+                            "from record r left join product_price price on (r.project_id = price.project_id and r.template_id = price.template_id and(r.phase_id is null or r.phase_id = price.phase_id)) " +
+                            "where r.id = x.id for json path) from record x";
+            QuerryRecords(cmdtxt).ForEach(row =>
+            {
+                try
+                {
+                    var result = JsonConvert.DeserializeObject<Record>(row);
+                    all.Add(result);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Failed to serialize record:\n{1}\ne:{0}", e.Message, row);
+                }
+            });
+            return all;
+        }
+
+        private static List<string> QuerryRecords(string commandtext)
+        {
+            var count = QuerryGet("select count(id) as count from record ").ToInt();
+            Form1.Bar.SafeInvoke(x =>
+            {
+                x.Maximum = count;
+                x.Value = 0;
+                x.Visible = true;
+            });
+            var all = new List<string>();
+            try
+            {
+                using (var connection = Connection())
+                using (var command = new SqlCommand(commandtext, connection))
+                {
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            all.Add(reader.GetString(0).Replace("[", "").Replace("]", "") ?? "{}");
+                            Form1.Bar.SafeInvoke(x => x.Value++);
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error executing {0}\nerror:{1}", commandtext, e.Message);
+            }
+            Form1.Bar.SafeInvoke(x => x.Visible = false);
+            return all;
         }
     }
 }

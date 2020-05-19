@@ -34,6 +34,7 @@
             this.LoginMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.ImportMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.DataMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -117,12 +118,26 @@
             this.DataMenu.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.DataMenu.Click += new System.EventHandler(this.btnData_Click);
             // 
+            // progressBar
+            // 
+            this.progressBar.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.progressBar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.progressBar.ForeColor = System.Drawing.Color.MediumAquamarine;
+            this.progressBar.Location = new System.Drawing.Point(0, 96);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(664, 10);
+            this.progressBar.Step = 1;
+            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar.TabIndex = 5;
+            this.progressBar.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(664, 496);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.Dashboard);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -145,6 +160,7 @@
         private System.Windows.Forms.ToolStripMenuItem DataMenu;
         private System.Windows.Forms.ToolStripMenuItem LoginMenu;
         private System.Windows.Forms.ToolStripMenuItem ImportMenu;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }
 

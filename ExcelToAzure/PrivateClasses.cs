@@ -180,7 +180,7 @@ namespace ExcelToAzure
             return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(obj));
         }
 
-        public static bool EqualTo<T>(this T original, T comparer) where T : new()
+        public static bool EqualTo<T>(this T original, T comparer) where T : DBInterface
         {
             return JsonConvert.SerializeObject(original) == JsonConvert.SerializeObject(comparer);
         }
