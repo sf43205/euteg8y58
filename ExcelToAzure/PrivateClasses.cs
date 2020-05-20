@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
+using System.Drawing;
 
 namespace ExcelToAzure
 {
@@ -238,5 +239,21 @@ namespace ExcelToAzure
         public static int ToInt(this string text) => (int)text.ToDecimal();
         public static int ToInt(this Control text) => (int)text.ToDecimal();
 
+        public static void Flash(this Form form, int interval, int times, params Control[] controls)
+        {
+            var labels = controls.ToList().Select(label => (label, label.ForeColor, label.AccessibleDescription)).ToList().FindAll(l => l.label.AccessibleDescription != "animating");
+            labels.ForEach(l => l.label.AccessibleDescription = "animating");
+            form.SafeInvoke(async f =>
+            {
+                for(int i = 0; i < times; i++)
+                {
+                    labels.ForEach(x => x.label.ForeColor = Color.White);
+                    await Task.Delay(interval / 2);
+                    labels.ForEach(x => x.label.ForeColor = x.ForeColor);
+                    await Task.Delay(interval / 2);
+                }
+                labels.ForEach(l => l.label.AccessibleDescription = l.AccessibleDescription);
+            });
+        }
     }
 }

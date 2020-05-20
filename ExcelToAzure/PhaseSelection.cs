@@ -25,7 +25,7 @@ namespace ExcelToAzure
             openFileDialog1 = new OpenFileDialog()
             {
                 FileName = "Select a Excel file",
-                Filter = "Text files (*.xls)|*.xls",
+                Filter = "Excel files (*.xls;*.xlsx)|*.xls;*.xlsx",
                 Title = "Open Excel file"
             };
         }
@@ -81,7 +81,7 @@ namespace ExcelToAzure
                     try
                     {
                         var filePath = openFileDialog1.FileName;
-                        Xls.GetArrayFromFile(filePath);
+                        ColumnSelection.Open(Xls.GetArrayFromFile(filePath), project, updated);
                     }
                     catch (SecurityException ex)
                     {

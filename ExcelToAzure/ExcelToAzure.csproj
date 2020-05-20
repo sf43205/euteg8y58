@@ -78,6 +78,12 @@
     <Compile Include="NewProject.Designer.cs">
       <DependentUpon>NewProject.cs</DependentUpon>
     </Compile>
+    <Compile Include="ColumnSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ColumnSelection.Designer.cs">
+      <DependentUpon>ColumnSelection.cs</DependentUpon>
+    </Compile>
     <Compile Include="PhaseSelection.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +105,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewProject.resx">
       <DependentUpon>NewProject.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColumnSelection.resx">
+      <DependentUpon>ColumnSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PhaseSelection.resx">
       <DependentUpon>PhaseSelection.cs</DependentUpon>

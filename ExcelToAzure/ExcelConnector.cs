@@ -12,7 +12,7 @@ namespace ExcelToAzure
 {
     public static class Xls
     {
-        public static void GetArrayFromFile(string filename)
+        public static List<string[]> GetArrayFromFile(string filename)
         {
             Sheets objSheets;
             _Worksheet objSheet;
@@ -38,12 +38,13 @@ namespace ExcelToAzure
 
                     //You can't automate Excel if you can't find the data you created, so 
                     //leave the subroutine.
-                    return;
+                    return new List<string[]>();
                 }
 
                 //Get a range of data.
                 //range = objSheet.get_Range("A1", "E5");
                 range = objSheet.UsedRange;
+
                 //Retrieve the data from the range.
                 Object[,] saRet;
                 saRet = (System.Object[,])range.get_Value(Missing.Value);
@@ -55,24 +56,22 @@ namespace ExcelToAzure
                 iCols = saRet.GetUpperBound(1);
 
                 //Build a string that contains the data of the array.
-                String valueString;
-                valueString = "Array Data\n";
+                List<string[]> data = new List<string[]>();
 
-                for (long rowCounter = 1; rowCounter <= iRows && rowCounter < 6; rowCounter++)
+                for (int rowCounter = 1; rowCounter <= iRows; rowCounter++)
                 {
-                    for (long colCounter = 1; colCounter <= iCols; colCounter++)
+                    var row = new string[iCols];
+                    for (int colCounter = 1; colCounter <= iCols; colCounter++)
                     {
-
                         //Write the next value into the string.
-                        valueString = String.Concat(valueString, (saRet[rowCounter, colCounter] ?? "").ToString() + ", ");
+                        row[colCounter - 1] = (saRet[rowCounter , colCounter] ?? "").ToString();
                     }
 
                     //Write in a new line.
-                    valueString = String.Concat(valueString, "\n");
+                    data.Add(row);
                 }
-
-                //Report the value of the array.
-                MessageBox.Show(valueString + string.Format("Total number of rows is {0}", iRows.ToString()), "Array Values");
+                MessageBox.Show("Returning data for Sheet--> " + objSheet.Name);
+                return data;
             }
 
             catch (Exception theException)
@@ -84,6 +83,7 @@ namespace ExcelToAzure
                 errorMessage = String.Concat(errorMessage, theException.Source);
 
                 MessageBox.Show(errorMessage, "Error");
+                return new List<string[]>();
             }
         }
 
@@ -167,6 +167,15 @@ namespace ExcelToAzure
 
                     //Set the range value to the array.
                     range.set_Value(Missing.Value, saRet);
+                    try
+                    {
+                        objSheet.ListObjects.AddEx(XlListObjectSourceType.xlSrcRange, range, range, Microsoft.Office.Interop.Excel.XlYesNoGuess.xlYes, range).Name = "MyTableStyle";
+                        objSheet.ListObjects.get_Item("MyTableStyle").TableStyle = "TableStyleLight9";
+                    }
+                    catch
+                    {
+
+                    }
                 }
 
                 //Return control of Excel to the user.
