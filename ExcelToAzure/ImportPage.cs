@@ -19,23 +19,25 @@ namespace ExcelToAzure
         {
             InitializeComponent();
             Dock = DockStyle.Fill;
-            //Table.AutoScroll = true;
             AutoScroll = true;
-            this.VisibleChanged += (s, e) => Reload();
-        }
-
-        protected override void OnShown(EventArgs e)
-        {
-            base.OnShown(e);
+            this.VisibleChanged += (s, e) =>
+            {
+                if (Visible)
+                    Reload();
+            };
         }
 
         static bool fetching = false;
         private void Reload()
         {
-            if (fetching) return;
+            if (fetching) 
+                return;
+
             fetching = true;
+
             if (Row.DefaultRow == null)
                 Row.DefaultRow = Table.Controls[0].Clone();
+
             Project.GetAll((res) =>
             {
                 Data = res;

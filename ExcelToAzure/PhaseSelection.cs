@@ -62,7 +62,7 @@ namespace ExcelToAzure
 
         private void cancel_Click(object sender, EventArgs e)
         {
-            Form1.Navigate(Form1.Import);
+            Form1.Navigate(Form1.ImportPage);
         }
 
         private void create_Click(object sender, EventArgs e)

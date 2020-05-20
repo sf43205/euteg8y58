@@ -19,7 +19,7 @@ namespace ExcelToAzure
     public partial class Form1 : Form
     {
         public static Form1 Main;
-        public static Control Dash, Login, Data, Import;
+        public static Control Dash, LoginPage, DataPage, ImportPage;
         public static List<Record> Records = new List<Record>();
         public static ProgressBar Bar;
         public Form1()
@@ -29,18 +29,21 @@ namespace ExcelToAzure
             Dash = Dashboard;
             Bar = progressBar;
             CheckShow();
-            Login = GetActiveControl(new LoginPage());
-            Console.WriteLine(JsonConvert.SerializeObject(new Record()));
+            LoginPage = GetActiveControl(new LoginPage());
+            ImportPage = GetActiveControl(new ImportPage());
+            LoginPage = GetActiveControl(new LoginPage());
         }
         public void CheckShow()
         {
-            bool visible = LoginPage.LoggedIn;
+            bool visible = ExcelToAzure.LoginPage.LoggedIn;
             ImportMenu.Visible = visible;
             DataMenu.Visible = visible;
+
             if (visible)
             {
                 fetching_data = true;
-                Record.All((all) =>
+                Record.All(  //Fetching....
+                (all) =>    //Finished fetching => do next thing
                 {
                     fetching_data = false;
                     Records = all;
@@ -51,51 +54,43 @@ namespace ExcelToAzure
         Control GetActiveControl(Form f)
         {
             f.TopLevel = false;
-            //f.Show();
             return f;
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            Navigate(Login);
+            Navigate(LoginPage);
         }
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            if (Login == null)
-                Login = GetActiveControl(new LoginPage());
-            Navigate(Login);
+            Navigate(LoginPage);
         }
 
         private void btnImport_Click(object sender, EventArgs e)
         {
-            if (Import == null)
-                Import = GetActiveControl(new ImportPage());
-            Navigate(Import);
-            
+            Navigate(ImportPage);
         }
 
         bool fetching_data = false;
         private void btnData_Click(object sender, EventArgs e)
         {
-            Dashboard.BackColor = Color.White;
             if (fetching_data)
                 MessageBox.Show("Fetching All Records\nMight take a minute!");
             else
                 Xls.ShowDataInNewApp(Records);
         }
 
-        public static void Navigate (Control cx)
+        public static void Navigate (Control page)
         {
-            var c = LoginPage.LoggedIn ? cx : Login;
-            Dash.SafeInvoke(x =>
+            var goToPage = ExcelToAzure.LoginPage.LoggedIn ? page : LoginPage;
+
+            Dash.SafeInvoke(dashboard =>
             {
-                //form.TopLevel = false;
-                //form.AutoSize = true;
-                x.Controls.Clear();
-                x.Controls.Add(c);
-                c.Dock = DockStyle.Fill;
-                c.Show();
+                dashboard.Controls.Clear();
+                dashboard.Controls.Add(goToPage);
+                goToPage.Dock = DockStyle.Fill;
+                goToPage.Show();
             });
         }
     }

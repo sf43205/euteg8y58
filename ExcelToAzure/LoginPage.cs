@@ -25,20 +25,22 @@ namespace ExcelToAzure
             {
                 btnLogin.Text = "ATTEMPTING TO LOGIN...";
                 btnLogin.BackColor = Color.PaleTurquoise;
-                //await Task.Delay(2000);
-                //MessageBox.Show("Failed to LOGIN");
-                if (SQL.Connect())
+
+                if (SQL.Connect(txtUsername.Text, txtPassword.Text))
                 {
                     LoggedIn = true;
                     Form1.Main.CheckShow();
                     MessageBox.Show("Success!", "Login");
+                    txtPassword.Text = "";
+                    Form1.Navigate(Form1.ImportPage);
                 }
                 else
                 {
                     LoggedIn = false;
                     Form1.Main.CheckShow();
-                    MessageBox.Show("Failed!", "Login");
+                    MessageBox.Show("Try again", "Failed!");
                 }
+
                 btnLogin.Text = "LOGIN";
                 btnLogin.BackColor = Color.Teal;
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -177,8 +178,8 @@ namespace ExcelToAzure
         public Phase phase = new Phase();
         [JsonProperty("price")]
         public decimal price = 0;
-        //[JsonProperty("project_id")]
-        //public int project_id { get => location.project.id; set => location.project.id = value; }
+        [JsonProperty("project_id")]
+        public int project_id { get => location.project.id; set => location.project.id = value; }
 
         public Record()
         {
@@ -187,7 +188,12 @@ namespace ExcelToAzure
         public static async void All(Action<List<Record>> result)
         {
             var all = new List<Record>();
-            await Task.Run(() => all = SQL.GetAllRecords());
+
+            await Task.Run(() => 
+            {
+                all = SQL.GetAllRecords();
+            });
+
             result?.Invoke(all);
         }
     }

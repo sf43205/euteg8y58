@@ -13,12 +13,17 @@ namespace ExcelToAzure
     public static class SQL
     {
         static string ServerName = "euteg8yt58.database.windows.net";
-        static string Database = "LAPRECON";
+        static string Database = "LAPRECON", username = "AAAzureAdminLAPRECON", password = "wer.asc%)$#B4weAbsd234:)";
         static string ConnectionString = "";
+        static string DefaultUser = "HDCCOLA", DefaultPassword = "hdyuxin16";
 
         private static SqlConnection Connection() => new SqlConnection(ConnectionString);
-        public static bool Connect(string username = "AAAzureAdminLAPRECON", string password = "wer.asc%)$#B4weAbsd234:)")
+        public static bool Connect(string user, string pass)
         {
+            if (user != DefaultUser || pass != DefaultPassword)
+            {
+                return false;
+            }
             try
             {
                 var result = false;
@@ -214,7 +219,7 @@ namespace ExcelToAzure
                     {
                         while (reader.Read())
                         {
-                            all.Add(reader.GetString(0).Replace("[", "").Replace("]", "") ?? "{}");
+                            all.Add((reader.GetString(0) ?? "{}").Replace("[", "").Replace("]", ""));
                             Form1.Bar.SafeInvoke(x => x.Value++);
                         }
                     }
