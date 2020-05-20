@@ -66,7 +66,7 @@
             this.CreateNewCompany.BackColor = System.Drawing.Color.CadetBlue;
             this.CreateNewCompany.Cursor = System.Windows.Forms.Cursors.Hand;
             this.CreateNewCompany.Dock = System.Windows.Forms.DockStyle.Right;
-            this.CreateNewCompany.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.CreateNewCompany.FlatAppearance.BorderColor = System.Drawing.Color.CadetBlue;
             this.CreateNewCompany.FlatAppearance.BorderSize = 0;
             this.CreateNewCompany.FlatAppearance.MouseDownBackColor = System.Drawing.Color.SteelBlue;
             this.CreateNewCompany.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -79,6 +79,7 @@
             this.CreateNewCompany.Name = "CreateNewCompany";
             this.CreateNewCompany.Size = new System.Drawing.Size(160, 50);
             this.CreateNewCompany.TabIndex = 1;
+            this.CreateNewCompany.TabStop = false;
             this.CreateNewCompany.Text = "Create New Project";
             this.CreateNewCompany.UseVisualStyleBackColor = false;
             this.CreateNewCompany.Click += new System.EventHandler(this.CreateNewCompany_Click);

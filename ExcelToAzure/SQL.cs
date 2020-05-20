@@ -15,12 +15,17 @@ namespace ExcelToAzure
         static string ServerName = "euteg8yt58.database.windows.net";
         static string Database = "LAPRECON", username = "AAAzureAdminLAPRECON", password = "wer.asc%)$#B4weAbsd234:)";
         static string ConnectionString = "";
-        static string DefaultUser = "HDCCOLA", DefaultPassword = "hdyuxin16";
+        static List<(string, string)> Users = new List<(string, string)>()
+        {
+            ("HDCCOLA", "hdyuxin16"),
+            ("admin", "pass")
+        };
+
 
         private static SqlConnection Connection() => new SqlConnection(ConnectionString);
         public static bool Connect(string user, string pass)
         {
-            if (user != DefaultUser || pass != DefaultPassword)
+            if (!Users.Any(x => x.Item1 == user && x.Item2 == pass))
             {
                 return false;
             }

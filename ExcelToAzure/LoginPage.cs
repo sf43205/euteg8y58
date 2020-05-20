@@ -51,5 +51,10 @@ namespace ExcelToAzure
             //Flow.Dock = DockStyle.Fill;
         }
 
+        private void txtPassword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return || e.KeyCode == Keys.Enter)
+                btnLogin_Click(sender, new EventArgs());
+        }
     }
 }
