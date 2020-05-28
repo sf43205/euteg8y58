@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.name = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.ListBox = new System.Windows.Forms.ListBox();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.cancel = new System.Windows.Forms.Button();
             this.create = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.ListBox = new System.Windows.Forms.ListBox();
-            this.name = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -61,38 +61,61 @@
             this.flowLayoutPanel1.TabIndex = 0;
             this.flowLayoutPanel1.WrapContents = false;
             // 
-            // cancel
+            // label1
             // 
-            this.cancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cancel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.cancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cancel.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cancel.Location = new System.Drawing.Point(0, 0);
-            this.cancel.Margin = new System.Windows.Forms.Padding(0);
-            this.cancel.Name = "cancel";
-            this.cancel.Size = new System.Drawing.Size(102, 42);
-            this.cancel.TabIndex = 2;
-            this.cancel.Text = "CANCEL";
-            this.cancel.UseVisualStyleBackColor = false;
-            this.cancel.Click += new System.EventHandler(this.cancel_Click);
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(32, 32);
+            this.label1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 24);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(363, 32);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "SELECT PHASE OF THE PROJECT";
             // 
-            // create
+            // label2
             // 
-            this.create.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.create.BackColor = System.Drawing.Color.CadetBlue;
-            this.create.Dock = System.Windows.Forms.DockStyle.Right;
-            this.create.FlatAppearance.BorderColor = System.Drawing.Color.CadetBlue;
-            this.create.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.create.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.create.ForeColor = System.Drawing.Color.White;
-            this.create.Location = new System.Drawing.Point(498, 0);
-            this.create.Margin = new System.Windows.Forms.Padding(0);
-            this.create.Name = "create";
-            this.create.Size = new System.Drawing.Size(102, 42);
-            this.create.TabIndex = 3;
-            this.create.Text = "SAVE";
-            this.create.UseVisualStyleBackColor = false;
-            this.create.Click += new System.EventHandler(this.create_Click);
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(32, 88);
+            this.label2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(56, 21);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "NAME";
+            // 
+            // name
+            // 
+            this.name.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.name.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.name.Location = new System.Drawing.Point(32, 117);
+            this.name.Margin = new System.Windows.Forms.Padding(0, 0, 0, 16);
+            this.name.Name = "name";
+            this.name.Size = new System.Drawing.Size(600, 33);
+            this.name.TabIndex = 3;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(32, 166);
+            this.label3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(135, 21);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "SELECT EXISTING";
+            // 
+            // ListBox
+            // 
+            this.flowLayoutPanel1.SetFlowBreak(this.ListBox, true);
+            this.ListBox.Font = new System.Drawing.Font("Segoe UI", 14.25F);
+            this.ListBox.FormattingEnabled = true;
+            this.ListBox.ItemHeight = 25;
+            this.ListBox.Location = new System.Drawing.Point(32, 195);
+            this.ListBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 24);
+            this.ListBox.Name = "ListBox";
+            this.ListBox.Size = new System.Drawing.Size(600, 129);
+            this.ListBox.TabIndex = 2;
+            this.ListBox.SelectedIndexChanged += new System.EventHandler(this.ListBox_SelectedIndexChanged);
             // 
             // panel1
             // 
@@ -110,61 +133,39 @@
             this.panel1.Size = new System.Drawing.Size(600, 42);
             this.panel1.TabIndex = 4;
             // 
-            // label1
+            // cancel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(32, 32);
-            this.label1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 24);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(363, 32);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "SELECT PHASE OF THE PROJECT";
+            this.cancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cancel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cancel.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cancel.Location = new System.Drawing.Point(0, 0);
+            this.cancel.Margin = new System.Windows.Forms.Padding(0);
+            this.cancel.Name = "cancel";
+            this.cancel.Size = new System.Drawing.Size(102, 42);
+            this.cancel.TabIndex = 2;
+            this.cancel.Text = "CANCEL";
+            this.cancel.UseVisualStyleBackColor = false;
+            this.cancel.Click += new System.EventHandler(this.cancel_Click);
             // 
-            // ListBox
+            // create
             // 
-            this.flowLayoutPanel1.SetFlowBreak(this.ListBox, true);
-            this.ListBox.Font = new System.Drawing.Font("Segoe UI", 14.25F);
-            this.ListBox.FormattingEnabled = true;
-            this.ListBox.ItemHeight = 25;
-            this.ListBox.Location = new System.Drawing.Point(32, 195);
-            this.ListBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 24);
-            this.ListBox.Name = "ListBox";
-            this.ListBox.Size = new System.Drawing.Size(600, 129);
-            this.ListBox.TabIndex = 2;
-            this.ListBox.SelectedIndexChanged += new System.EventHandler(this.ListBox_SelectedIndexChanged);
-            // 
-            // name
-            // 
-            this.name.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.name.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.name.Location = new System.Drawing.Point(32, 117);
-            this.name.Margin = new System.Windows.Forms.Padding(0, 0, 0, 16);
-            this.name.Name = "name";
-            this.name.Size = new System.Drawing.Size(600, 33);
-            this.name.TabIndex = 3;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(32, 88);
-            this.label2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(56, 21);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "NAME";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(32, 166);
-            this.label3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(135, 21);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "SELECT EXISTING";
+            this.create.AutoSize = true;
+            this.create.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.create.BackColor = System.Drawing.Color.CadetBlue;
+            this.create.Dock = System.Windows.Forms.DockStyle.Right;
+            this.create.FlatAppearance.BorderColor = System.Drawing.Color.CadetBlue;
+            this.create.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.create.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.create.ForeColor = System.Drawing.Color.White;
+            this.create.Location = new System.Drawing.Point(463, 0);
+            this.create.Margin = new System.Windows.Forms.Padding(0);
+            this.create.Name = "create";
+            this.create.Size = new System.Drawing.Size(137, 42);
+            this.create.TabIndex = 3;
+            this.create.Text = "SELECT FILE";
+            this.create.UseVisualStyleBackColor = false;
+            this.create.Click += new System.EventHandler(this.create_Click);
             // 
             // PhaseSelection
             // 
@@ -184,6 +185,7 @@
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }

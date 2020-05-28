@@ -41,14 +41,14 @@ namespace ExcelToAzure
 
             if (visible)
             {
-                fetching_data = true;
-                Record.All(  //Fetching....
-                (all) =>    //Finished fetching => do next thing
-                {
-                    fetching_data = false;
-                    Records = all;
-                    MessageBox.Show("All data loaded!");
-                });
+                //fetching_data = true;
+                //Record.All(  //Fetching....
+                //(all) =>    //Finished fetching => do next thing
+                //{
+                //    fetching_data = false;
+                //    Records = all;
+                //    MessageBox.Show("All data loaded!");
+                //});
             }
         }
         Control GetActiveControl(Form f)
@@ -75,10 +75,21 @@ namespace ExcelToAzure
         bool fetching_data = false;
         private void btnData_Click(object sender, EventArgs e)
         {
-            if (fetching_data)
-                MessageBox.Show("Fetching All Records\nMight take a minute!");
-            else
+            if (fetching_data) return;
+            if(Bar.Visible)
+            {
+                MessageBox.Show("Wait for the current process to complete");
+                return;
+            }
+            fetching_data = true;
+            MessageBox.Show("Fetching All Records\nMight take a minute!");
+            Record.All(  //Fetching....
+            (all) =>    //Finished fetching => do next thing
+            {
+                fetching_data = false;
+                Records = all;
                 Xls.ShowDataInNewApp(Records);
+            });
         }
 
         public static void Navigate (Control page)

@@ -238,5 +238,130 @@ namespace ExcelToAzure
             Form1.Bar.SafeInvoke(x => x.Visible = false);
             return all;
         }
+
+        public static bool ImportNewData(List<Record> records)
+        {
+            bool success_all = false;
+            string computer_that_imported = System.Windows.Forms.SystemInformation.ComputerName;
+            string levelstxt = "BEGIN IF NOT EXISTS (select id from levels where UPPER(level1) = UPPER(@level1) and UPPER(name1) = UPPER(@name1) and UPPER(level2) = UPPER(@level2) and UPPER(name2) = UPPER(@name2) and UPPER(level3) = UPPER(@level3) and UPPER(name3) = UPPER(@name3) and UPPER(level4) = UPPER(@level4) and UPPER(name4) = UPPER(@name4)) " +
+                               "BEGIN INSERT INTO levels(level1, name1, level2, name2, level3, name3, level4, name4) output inserted.id values(@level1, @name1, @level2, @name2, @level3, @name3, @level4, @name4) END " +
+                               "ELSE SELECT id FROM levels WHERE UPPER(level1) = UPPER(@level1) and UPPER(name1) = UPPER(@name1) and UPPER(level2) = UPPER(@level2) and UPPER(name2) = UPPER(@name2) and UPPER(level3) = UPPER(@level3) and UPPER(name3) = UPPER(@name3) and UPPER(level4) = UPPER(@level4) and UPPER(name4) = UPPER(@name4) END ";
+            string templatetxt = "BEGIN IF NOT EXISTS (select id from template where level_id = @level_id and UPPER(code) = UPPER(@code) and UPPER(ut) = UPPER(@ut) and UPPER(description) = UPPER(@description)) " +
+                                 "BEGIN INSERT INTO template (level_id, code, description, ut) output inserted.id values (@level_id, @code, @description, @ut) END " +
+                                 "ELSE SELECT id FROM template WHERE level_id = @level_id and UPPER(code) = UPPER(@code) and UPPER(ut) = UPPER(@ut) and UPPER(description) = UPPER(@description) END";
+            string locationtxt = "BEGIN IF NOT EXISTS (select id from location where project_id = project_id and UPPER(code) = UPPER(@code) and UPPER(name) = UPPER(@name) and cast(bsf as decimal(16,7)) = cast(@bsf as decimal(16,7))) " +
+                                 "BEGIN INSERT INTO location(project_id, code, name, bsf) output inserted.id values(@project_id, @code, @name, @bsf) END " +
+                                 "ELSE select id from location where project_id = project_id and UPPER(code) = UPPER(@code) and UPPER(name) = UPPER(@name) and cast(bsf as decimal(16, 7)) = cast(@bsf as decimal(16, 7)) END ";
+            string pricetxt = "BEGIN IF NOT EXISTS (select template_id from product_price where phase_id = @phase_id and template_id = @template_id and project_id = project_id and cast(unit_price as decimal(16,7)) = cast(@unit_price as decimal(16,7))) " + 
+                              "BEGIN INSERT INTO product_price(template_id, phase_id, project_id, unit_price) values(@template_id, @phase_id, @project_id, @unit_price) END END";
+            string recordtxt = "BEGIN IF NOT EXISTS (select id from record where template_id = @template_id and project_id = @project_id and location_id = @location_id and phase_id = @phase_id and cast(qty as decimal(16,7)) = cast(@qty as decimal(16,7)) and cast(total as decimal(16,7)) = cast(@total as decimal(16,7))) " +
+                               "BEGIN INSERT INTO record (template_id, project_id, qty, total, comments, csi_code, trade_code, estimate_category, location_id, phase_id, computer_that_imported) output inserted.id values (@template_id, @project_id, @qty, @total, @comments, @csi_code, @trade_code, @estimate_category, @location_id, @phase_id, @computer_that_imported + ' INSERTED') END " +
+                               "ELSE UPDATE record set comments = @comments, time_recorded = getdate(), csi_code = @csi_code, trade_code = @trade_code, estimate_category = @estimate_category, computer_that_imported = computer_that_imported + ' ' + @computer_that_imported + ' UPDATED' output inserted.id where id = (select top 1 id from record where template_id = @template_id and project_id = @project_id and location_id = @location_id and phase_id = @phase_id and cast(qty as decimal(16, 7)) = cast(@qty as decimal(16, 7)) and cast(total as decimal(16, 7)) = cast(@total as decimal(16, 7))) END";
+            Form1.Bar.SafeInvoke(x =>
+            {
+                x.Maximum = records.Count();
+                x.Value = 0;
+                x.Visible = true;
+            });
+            using (var connection = Connection())
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        records.ForEach(record =>
+                        {
+                            using (var levelscmd = new SqlCommand(levelstxt, connection, transaction))
+                            using (var templatecmd = new SqlCommand(templatetxt, connection, transaction))
+                            using (var locationcmd = new SqlCommand(locationtxt, connection, transaction))
+                            using (var pricecmd = new SqlCommand(pricetxt, connection, transaction))
+                            using (var recordcmd = new SqlCommand(recordtxt, connection, transaction))
+                            {
+                                try
+                                {
+                                    levelscmd.Parameters.AddWithValue("level1", record.template.level.level1);
+                                    levelscmd.Parameters.AddWithValue("name1", record.template.level.name1);
+                                    levelscmd.Parameters.AddWithValue("level2", record.template.level.level1);
+                                    levelscmd.Parameters.AddWithValue("name2", record.template.level.name1);
+                                    levelscmd.Parameters.AddWithValue("level3", record.template.level.level1);
+                                    levelscmd.Parameters.AddWithValue("name3", record.template.level.name1);
+                                    levelscmd.Parameters.AddWithValue("level4", record.template.level.level1);
+                                    levelscmd.Parameters.AddWithValue("name4", record.template.level.name1);
+
+                                    record.template.level.id = (int)levelscmd.ExecuteScalar();
+                                    Console.WriteLine("Success levelscmd");
+                                    levelscmd.Dispose();
+
+                                    templatecmd.Parameters.AddWithValue("level_id", record.template.level.id);
+                                    templatecmd.Parameters.AddWithValue("code", record.template.code);
+                                    templatecmd.Parameters.AddWithValue("description", record.template.description);
+                                    templatecmd.Parameters.AddWithValue("ut", record.template.ut);
+
+                                    record.template.id = (int)templatecmd.ExecuteScalar();
+                                    Console.WriteLine("Success templatecmd");
+                                    templatecmd.Dispose();
+
+                                    locationcmd.Parameters.AddWithValue("code", record.location.code);
+                                    locationcmd.Parameters.AddWithValue("name", record.location.name);
+                                    locationcmd.Parameters.AddWithValue("project_id", record.location.project.id);
+                                    locationcmd.Parameters.AddWithValue("bsf", record.location.bsf);
+
+                                    record.location.id = (int)locationcmd.ExecuteScalar();
+                                    Console.WriteLine("Success locationcmd");
+                                    locationcmd.Dispose();
+
+                                    pricecmd.Parameters.AddWithValue("project_id", record.location.project.id);
+                                    pricecmd.Parameters.AddWithValue("template_id", record.template.id);
+                                    pricecmd.Parameters.AddWithValue("phase_id", record.phase.id);
+                                    pricecmd.Parameters.AddWithValue("unit_price", record.price);
+
+                                    pricecmd.ExecuteNonQuery();
+                                    Console.WriteLine("Success pricecmd");
+                                    pricecmd.Dispose();
+
+                                    recordcmd.Parameters.AddWithValue("template_id", record.template.id);
+                                    recordcmd.Parameters.AddWithValue("project_id", record.location.project.id);
+                                    recordcmd.Parameters.AddWithValue("phase_id", record.phase.id);
+                                    recordcmd.Parameters.AddWithValue("location_id", record.location.id);
+                                    recordcmd.Parameters.AddWithValue("qty", record.qty);
+                                    recordcmd.Parameters.AddWithValue("total", record.total);
+                                    recordcmd.Parameters.AddWithValue("comments", record.comments);
+                                    recordcmd.Parameters.AddWithValue("csi_code", record.csi_code);
+                                    recordcmd.Parameters.AddWithValue("trade_code", record.trade_code);
+                                    recordcmd.Parameters.AddWithValue("estimate_category", record.estimate_category);
+                                    recordcmd.Parameters.AddWithValue("computer_that_imported", computer_that_imported);
+
+                                    record.id = (int)recordcmd.ExecuteScalar();
+                                    Console.WriteLine("Success recordcmd");
+                                    recordcmd.Dispose();
+
+                                    success_all = record.id != -1;
+                                    Form1.Bar.SafeInvoke(x => x.Value++);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("Error executing {0}\nerror:{1}", JsonConvert.SerializeObject(record), ex.Message);
+                                    //PrivateClasses.SafeInvoke(() => MessageBox.Show(ex.Message));
+                                    success_all = false;
+                                }
+                            }
+                        });
+                        transaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Error executing {0}\nerror:{1}", "ImportNewData", e.Message);
+                        PrivateClasses.SafeInvoke(() => MessageBox.Show(Form1.Bar.Value.ToString() + " were successfully imported", "Some records were not imported"));
+                        transaction.Rollback();
+                        connection.Close();
+                        return false;
+                    }
+                }
+                connection.Close();
+            }
+            Form1.Bar.SafeInvoke(x => x.Visible = false);
+            return success_all;
+        }
     }
 }

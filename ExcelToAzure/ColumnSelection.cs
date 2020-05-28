@@ -108,10 +108,24 @@ namespace ExcelToAzure
             var result = MessageBox.Show(text, "Is everything correct?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3);
             if (result == DialogResult.Yes)
             {
-                MessageBox.Show("Need to implement this function", "Finished");
+                InsertDataToDB(PrepData());
                 Form1.Navigate(Form1.ImportPage);
-                Xls.ShowDataInNewApp(PrepData());
+                //Xls.ShowDataInNewApp(PrepData());
             }
+        }
+
+        private async void InsertDataToDB(List<Record> allrecs)
+        {
+            var success = false;
+            while (Form1.Bar.Visible)
+            {
+                await Task.Delay(1000);
+            }
+            await Task.Run(() => success = SQL.ImportNewData(allrecs));
+            if (success)
+                MessageBox.Show("Successfully imported data");
+            else
+                MessageBox.Show("Failed to import all the data");
         }
 
         List<Record> PrepData()

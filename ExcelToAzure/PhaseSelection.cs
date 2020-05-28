@@ -74,7 +74,7 @@ namespace ExcelToAzure
             phase.Update((updated) =>
             {
                 project = data;
-                create.Text = "Save";
+                create.Text = "SELECT FILE";
                 create.BackColor = Color.CadetBlue;
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {

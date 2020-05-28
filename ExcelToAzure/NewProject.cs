@@ -57,6 +57,11 @@ namespace ExcelToAzure
         private void create_Click(object sender, EventArgs e)
         {
             if (create.Text == "Updating") return;
+            if (name.Text.Trim().Length < 1)
+            {
+                this.Flash(200, 10, labelName);
+                return;
+            }
             create.Text = "Updating";
             create.BackColor = Color.Gold;
             
