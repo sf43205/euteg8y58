@@ -28,6 +28,8 @@ namespace ExcelToAzure
                 {
                     //Get a reference to the first sheet of the workbook.
                     objSheets = objBook.Worksheets;
+                    var listofnames = string.Join("\n", objSheets.Cast<_Worksheet>().Select(x => x.Name));
+                    MessageBox.Show("List of sheets found in this Excel:\n" + listofnames);
                     objSheet = (_Worksheet)objSheets.get_Item(1);
                 }
 

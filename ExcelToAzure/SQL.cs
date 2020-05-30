@@ -18,7 +18,8 @@ namespace ExcelToAzure
         static List<(string, string)> Users = new List<(string, string)>()
         {
             ("HDCCOLA", "hdyuxin16"),
-            ("admin", "pass")
+            ("admin", "pass"),
+            ("user", "1234")
         };
 
 
@@ -249,9 +250,9 @@ namespace ExcelToAzure
             string templatetxt = "BEGIN IF NOT EXISTS (select id from template where level_id = @level_id and UPPER(code) = UPPER(@code) and UPPER(ut) = UPPER(@ut) and UPPER(description) = UPPER(@description)) " +
                                  "BEGIN INSERT INTO template (level_id, code, description, ut) output inserted.id values (@level_id, @code, @description, @ut) END " +
                                  "ELSE SELECT id FROM template WHERE level_id = @level_id and UPPER(code) = UPPER(@code) and UPPER(ut) = UPPER(@ut) and UPPER(description) = UPPER(@description) END";
-            string locationtxt = "BEGIN IF NOT EXISTS (select id from location where project_id = project_id and UPPER(code) = UPPER(@code) and UPPER(name) = UPPER(@name) and cast(bsf as decimal(16,7)) = cast(@bsf as decimal(16,7))) " +
+            string locationtxt = "BEGIN IF NOT EXISTS (select id from location where project_id = project_id and UPPER(code) = UPPER(@code) and UPPER(name) = UPPER(@name)) " +
                                  "BEGIN INSERT INTO location(project_id, code, name, bsf) output inserted.id values(@project_id, @code, @name, @bsf) END " +
-                                 "ELSE select id from location where project_id = project_id and UPPER(code) = UPPER(@code) and UPPER(name) = UPPER(@name) and cast(bsf as decimal(16, 7)) = cast(@bsf as decimal(16, 7)) END ";
+                                 "ELSE select id from location where project_id = project_id and UPPER(code) = UPPER(@code) and UPPER(name) = UPPER(@name)) END ";
             string pricetxt = "BEGIN IF NOT EXISTS (select template_id from product_price where phase_id = @phase_id and template_id = @template_id and project_id = project_id and cast(unit_price as decimal(16,7)) = cast(@unit_price as decimal(16,7))) " + 
                               "BEGIN INSERT INTO product_price(template_id, phase_id, project_id, unit_price) values(@template_id, @phase_id, @project_id, @unit_price) END END";
             string recordtxt = "BEGIN IF NOT EXISTS (select id from record where template_id = @template_id and project_id = @project_id and location_id = @location_id and phase_id = @phase_id and cast(qty as decimal(16,7)) = cast(@qty as decimal(16,7)) and cast(total as decimal(16,7)) = cast(@total as decimal(16,7))) " +

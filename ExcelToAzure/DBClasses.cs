@@ -19,7 +19,7 @@ namespace ExcelToAzure
         public string name = "";
         [JsonProperty("description")]
         public string description = "";
-        [JsonProperty("nownerame")]
+        [JsonProperty("owner")]
         public string owner = "";
         [JsonProperty("type")]
         public string type = "";
