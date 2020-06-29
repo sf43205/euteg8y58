@@ -41,7 +41,8 @@ namespace ExcelToAzure
                 description = description.Text.Trim(),
                 owner = owner.Text.Trim(),
                 type = type.Text.Trim(),
-                duration = duration.ToDecimal()
+                duration = duration.ToDecimal(),
+                gsf = gsf.ToDecimal()
             };
             set
             {
@@ -51,6 +52,7 @@ namespace ExcelToAzure
                 owner.Text = value.owner;
                 type.Text = value.type;
                 duration.Text = value.duration.ToString();
+                gsf.Text = value.gsf.ToString();
             }
         }
 
@@ -87,7 +89,7 @@ namespace ExcelToAzure
             label.SelectionStart = label.Text.Length;
         }
 
-        private void duration_TextChanged(object sender, EventArgs e)
+        private void Label_TextChanged(object sender, EventArgs e)
         {
             var label = sender as TextBox;
             label.Text = label.NumbersOnly(true);

@@ -164,7 +164,6 @@
             // description
             // 
             this.description.AutoEllipsis = true;
-            this.description.AutoSize = true;
             this.description.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.layout.SetFlowBreak(this.description, true);
             this.description.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -180,14 +179,17 @@
             // 
             // type
             // 
+            this.type.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.type.AutoEllipsis = true;
+            this.type.AutoSize = true;
             this.type.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.type.Location = new System.Drawing.Point(405, 16);
             this.type.Margin = new System.Windows.Forms.Padding(8, 8, 8, 0);
             this.type.MaximumSize = new System.Drawing.Size(200, 17);
             this.type.MinimumSize = new System.Drawing.Size(17, 17);
             this.type.Name = "type";
-            this.type.Size = new System.Drawing.Size(120, 17);
+            this.type.Size = new System.Drawing.Size(35, 17);
             this.type.TabIndex = 3;
             this.type.Text = "type";
             this.type.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

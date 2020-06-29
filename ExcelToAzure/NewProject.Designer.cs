@@ -44,6 +44,8 @@
             this.cancel = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.create = new System.Windows.Forms.Button();
+            this.labelgsf = new System.Windows.Forms.Label();
+            this.gsf = new System.Windows.Forms.TextBox();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -63,13 +65,15 @@
             this.flowLayoutPanel1.Controls.Add(this.owner);
             this.flowLayoutPanel1.Controls.Add(this.label6);
             this.flowLayoutPanel1.Controls.Add(this.duration);
+            this.flowLayoutPanel1.Controls.Add(this.labelgsf);
+            this.flowLayoutPanel1.Controls.Add(this.gsf);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(32, 16, 32, 32);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(571, 569);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(571, 621);
             this.flowLayoutPanel1.TabIndex = 0;
             this.flowLayoutPanel1.WrapContents = false;
             // 
@@ -192,7 +196,7 @@
             this.duration.Size = new System.Drawing.Size(500, 33);
             this.duration.TabIndex = 10;
             this.duration.Text = "0";
-            this.duration.TextChanged += new System.EventHandler(this.duration_TextChanged);
+            this.duration.TextChanged += new System.EventHandler(this.Label_TextChanged);
             // 
             // flowLayoutPanel2
             // 
@@ -201,7 +205,7 @@
             this.flowLayoutPanel2.Controls.Add(this.panel1);
             this.flowLayoutPanel2.Controls.Add(this.create);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 491);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 543);
             this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(32, 8, 32, 32);
@@ -251,11 +255,34 @@
             this.create.UseVisualStyleBackColor = false;
             this.create.Click += new System.EventHandler(this.create_Click);
             // 
+            // labelgsf
+            // 
+            this.labelgsf.AutoSize = true;
+            this.labelgsf.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelgsf.Location = new System.Drawing.Point(32, 462);
+            this.labelgsf.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.labelgsf.Name = "labelgsf";
+            this.labelgsf.Size = new System.Drawing.Size(38, 21);
+            this.labelgsf.TabIndex = 11;
+            this.labelgsf.Text = "GSF";
+            // 
+            // gsf
+            // 
+            this.gsf.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.gsf.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gsf.Location = new System.Drawing.Point(32, 491);
+            this.gsf.Margin = new System.Windows.Forms.Padding(0, 0, 0, 16);
+            this.gsf.Name = "gsf";
+            this.gsf.Size = new System.Drawing.Size(500, 33);
+            this.gsf.TabIndex = 12;
+            this.gsf.Text = "0";
+            this.gsf.TextChanged += new System.EventHandler(this.Label_TextChanged);
+            // 
             // NewProject
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(571, 569);
+            this.ClientSize = new System.Drawing.Size(571, 621);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.flowLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
@@ -290,5 +317,7 @@
         private System.Windows.Forms.Button cancel;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button create;
+        private System.Windows.Forms.Label labelgsf;
+        private System.Windows.Forms.TextBox gsf;
     }
 }

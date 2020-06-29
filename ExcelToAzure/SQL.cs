@@ -19,7 +19,7 @@ namespace ExcelToAzure
         {
             ("HDCCOLA", "hdyuxin16"),
             ("admin", "pass"),
-            ("user", "1234")
+            ("user", "0000")
         };
 
 
@@ -130,13 +130,34 @@ namespace ExcelToAzure
             return res;
         }
 
+        internal static bool QuerryUpdate(string commandtext)
+        {
+            try
+            {
+                commandtext = commandtext.Trim();
+                using (var connection = Connection())
+                using (var command = new SqlCommand(commandtext, connection))
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error executing {0}\nerror:{1}", commandtext, e.Message);
+            }
+            return false;
+        }
+
         internal static bool UpdateProject(Project project)
         {
             bool success = false;
             string cmdtext = project.id == -1 ?
-                "insert into project (name, description, owner, type, duration) output inserted.id values (@name, @description, @owner, @type, @duration);"
+                "insert into project (name, description, owner, type, duration, gsf) output inserted.id values (@name, @description, @owner, @type, @duration, @gsf);"
                 :
-                "update project set name = @name, description = @description, owner = @owner, type = @type, duration = @duration output inserted.id where id = @id;";
+                "update project set name = @name, description = @description, owner = @owner, type = @type, duration = @duration, gsf = @gsf output inserted.id where id = @id;";
 
             try
             {
@@ -154,6 +175,7 @@ namespace ExcelToAzure
                             command.Parameters.AddWithValue("owner", project.owner);
                             command.Parameters.AddWithValue("type", project.type);
                             command.Parameters.AddWithValue("duration", project.duration);
+                            command.Parameters.AddWithValue("gsf", project.gsf);
 
                             project.id = (int)command.ExecuteScalar();
 

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,17 +55,32 @@ namespace ExcelToAzure
                     };
                     Table.Controls.Add(row.control);
                     row.Clicked += (s, e) => PhaseSelection.Open(s as Project);
-                    row.RightClicked += (s, e) => NewProject.Open(x, (saved) =>
-                    {
-                        if (saved)
-                            Reload();
-                    });
+                    SetMenu(x, row.control);
                     Table.RowStyles.Add(style);
                 });
                 Table.Controls.Add(new Panel());
                 Table.Refresh();
                 fetching = false;
             });
+
+            void SetMenu(Project p, Control c)
+            {
+                var Menu = new ContextMenu();
+                c.ContextMenu = Menu;
+                MenuItem edit = new MenuItem("Edit " + p.name);
+                MenuItem locations = new MenuItem("See Locations");
+
+                Menu.MenuItems.Add(edit);
+                Menu.MenuItems.Add(locations);
+
+                edit.Click += (s, e) => NewProject.Open(p, (saved) =>
+                {
+                    if (saved)
+                        Reload();
+                });
+
+                locations.Click += (s, e) => LocationsPage.Show(p);
+            }
         }
 
         private class Row

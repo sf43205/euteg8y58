@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Deployment.Application;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -25,6 +26,8 @@ namespace ExcelToAzure
         public string type = "";
         [JsonProperty("duration")]
         public decimal duration = 0;
+        [JsonProperty("gsf")]
+        public decimal gsf = 0;
 
         public Project()
         {
@@ -46,6 +49,14 @@ namespace ExcelToAzure
             var command = "select * from project";
             var all = new List<Project>();
             await Task.Run(() => all = JsonConvert.DeserializeObject<List<Project>>(SQL.QuerryGet(command)));
+            result?.Invoke(all);
+        }
+
+        public async void GetLocations(Action<List<Location>> result)
+        {
+            var command = "select * from location where project_id = " + id.ToString();
+            var all = new List<Location>();
+            await Task.Run(() => all = JsonConvert.DeserializeObject<List<Location>>(SQL.QuerryGet(command)));
             result?.Invoke(all);
         }
     }
@@ -117,6 +128,12 @@ namespace ExcelToAzure
 
         public Location()
         { 
+        }
+
+        public void Update()
+        {
+            string command = "update location set bsf = " + bsf.ToString() + " where id = " + id.ToString() + ";";
+            SQL.QuerryUpdate(command);
         }
     }
 

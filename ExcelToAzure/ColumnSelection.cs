@@ -52,7 +52,8 @@ namespace ExcelToAzure
         {
             page = 0;
             Headers.Clear();
-            PairedHeaders = (new Header[properties.Length]).ToList();
+            for (int i = 0; i < properties.Length; i++) PairedHeaders.Add(new Header());
+            //PairedHeaders = (new Header[properties.Length]).ToList();
             for (int i = 0; i < rows.First().Length; i++)
             {
                 Headers.Add(new Header() { index = i, value = rows.First()[i] });
@@ -126,6 +127,7 @@ namespace ExcelToAzure
                 MessageBox.Show("Successfully imported data");
             else
                 MessageBox.Show("Failed to import all the data");
+            Form1.Main.SafeInvoke(x => LocationsPage.Show(project));
         }
 
         List<Record> PrepData()
@@ -175,10 +177,10 @@ namespace ExcelToAzure
             SetListBox();
         }
 
-        struct Header
+        class Header
         {
-            public string value;
-            public int index;
+            public string value = "";
+            public int index = -1;
         }
 
         string[] properties = new string[]

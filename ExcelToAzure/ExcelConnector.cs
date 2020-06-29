@@ -12,7 +12,7 @@ namespace ExcelToAzure
 {
     public static class Xls
     {
-        public static List<string[]> GetArrayFromFile(string filename)
+        public static void GetArrayFromFile(string filename, Action<List<string[]>> result)
         {
             Sheets objSheets;
             _Worksheet objSheet;
@@ -21,71 +21,48 @@ namespace ExcelToAzure
             var xlApp = new Excel.Application();
             var objBook = xlApp.Workbooks.Open(filename, 0, true, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
 
-
             try
             {
-                try
+                //Get a reference to the first sheet of the workbook.
+                objSheets = objBook.Worksheets;
+                var worksheets = objSheets.Cast<_Worksheet>().ToList();
+                SelectFromList.Open(worksheets.Select(x => x.Name).ToList(), "Select Sheet to import", (sheetname) =>
                 {
-                    //Get a reference to the first sheet of the workbook.
-                    objSheets = objBook.Worksheets;
-                    var listofnames = string.Join("\n", objSheets.Cast<_Worksheet>().Select(x => x.Name));
-                    MessageBox.Show("List of sheets found in this Excel:\n" + listofnames);
-                    objSheet = (_Worksheet)objSheets.get_Item(1);
-                }
+                    objSheet = worksheets.Find(x => x.Name == sheetname);
+                    range = objSheet.UsedRange;
 
-                catch (Exception theException)
-                {
+                    //Retrieve the data from the range.
+                    Object[,] saRet;
+                    saRet = (System.Object[,])range.get_Value(Missing.Value);
 
-                    MessageBox.Show(theException.Message, "Missing Workbook?");
+                    //Determine the dimensions of the array.
+                    long iRows;
+                    long iCols;
+                    iRows = saRet.GetUpperBound(0);
+                    iCols = saRet.GetUpperBound(1);
 
-                    //You can't automate Excel if you can't find the data you created, so 
-                    //leave the subroutine.
-                    return new List<string[]>();
-                }
+                    //Build a string that contains the data of the array.
+                    List<string[]> data = new List<string[]>();
 
-                //Get a range of data.
-                //range = objSheet.get_Range("A1", "E5");
-                range = objSheet.UsedRange;
-
-                //Retrieve the data from the range.
-                Object[,] saRet;
-                saRet = (System.Object[,])range.get_Value(Missing.Value);
-
-                //Determine the dimensions of the array.
-                long iRows;
-                long iCols;
-                iRows = saRet.GetUpperBound(0);
-                iCols = saRet.GetUpperBound(1);
-
-                //Build a string that contains the data of the array.
-                List<string[]> data = new List<string[]>();
-
-                for (int rowCounter = 1; rowCounter <= iRows; rowCounter++)
-                {
-                    var row = new string[iCols];
-                    for (int colCounter = 1; colCounter <= iCols; colCounter++)
+                    for (int rowCounter = 1; rowCounter <= iRows; rowCounter++)
                     {
-                        //Write the next value into the string.
-                        row[colCounter - 1] = (saRet[rowCounter , colCounter] ?? "").ToString();
+                        var row = new string[iCols];
+                        for (int colCounter = 1; colCounter <= iCols; colCounter++)
+                        {
+                            //Write the next value into the string.
+                            row[colCounter - 1] = (saRet[rowCounter, colCounter] ?? "").ToString();
+                        }
+
+                        //Write in a new line.
+                        data.Add(row);
                     }
-
-                    //Write in a new line.
-                    data.Add(row);
-                }
-                MessageBox.Show("Returning data for Sheet--> " + objSheet.Name);
-                return data;
+                    //MessageBox.Show("Returning data for Sheet--> " + objSheet.Name);
+                    result?.SafeInvoke(data);
+                });
             }
-
             catch (Exception theException)
             {
-                String errorMessage;
-                errorMessage = "Error: ";
-                errorMessage = String.Concat(errorMessage, theException.Message);
-                errorMessage = String.Concat(errorMessage, " Line: ");
-                errorMessage = String.Concat(errorMessage, theException.Source);
-
-                MessageBox.Show(errorMessage, "Error");
-                return new List<string[]>();
+                MessageBox.Show(theException.Message, "Missing Workbook?");
             }
         }
 
