@@ -31,10 +31,6 @@ namespace ExcelToAzure
 
         public Project()
         {
-            var ph = new Phase();
-            var ph2 = ph.New();
-
-            var same = ph.EqualTo(ph2);
         }
 
         public async void Update(Action<bool> success)

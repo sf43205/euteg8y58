@@ -41,10 +41,10 @@
             // Dashboard
             // 
             this.Dashboard.AutoScroll = true;
-            this.Dashboard.AutoSize = true;
+            this.Dashboard.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Dashboard.BackColor = System.Drawing.Color.White;
             this.Dashboard.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Dashboard.Location = new System.Drawing.Point(0, 96);
+            this.Dashboard.Location = new System.Drawing.Point(0, 106);
             this.Dashboard.Margin = new System.Windows.Forms.Padding(0);
             this.Dashboard.MinimumSize = new System.Drawing.Size(664, 400);
             this.Dashboard.Name = "Dashboard";
@@ -137,8 +137,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(664, 496);
-            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.Dashboard);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -150,7 +150,6 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

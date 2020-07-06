@@ -72,24 +72,19 @@ namespace ExcelToAzure
             Navigate(ImportPage);
         }
 
-        bool fetching_data = false;
+        //bool fetching_data = false;
         private void btnData_Click(object sender, EventArgs e)
         {
-            if (fetching_data) return;
-            if(Bar.Visible)
-            {
-                MessageBox.Show("Wait for the current process to complete");
-                return;
-            }
-            fetching_data = true;
-            MessageBox.Show("Fetching All Records\nMight take a minute!");
+            //if (fetching_data) return;
+            //fetching_data = true;
+            LoadingData.Show(() =>
             Record.All(  //Fetching....
             (all) =>    //Finished fetching => do next thing
             {
-                fetching_data = false;
+                //fetching_data = false;
                 Records = all;
-                Xls.ShowDataInNewApp(Records);
-            });
+            }),
+            () => DataSelection.Show(Records));
         }
 
         public static void Navigate (Control page)
@@ -102,6 +97,7 @@ namespace ExcelToAzure
                 dashboard.Controls.Add(goToPage);
                 goToPage.Dock = DockStyle.Fill;
                 goToPage.Show();
+                Form1.Main.Dashboard.AutoScroll = true;
             });
         }
     }

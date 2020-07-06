@@ -67,6 +67,41 @@ namespace ExcelToAzure
             return instance;
         }
 
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            HashSet<TKey> seenKeys = new HashSet<TKey>();
+            foreach (TSource element in source)
+            {
+                if (seenKeys.Add(keySelector(element)))
+                {
+                    yield return element;
+                }
+            }
+        }
+
+        public static void RemoveBy<T>(this List<T> myList, Func<T, bool> comparison) where T : class
+        {
+            var toBeRemoved = new List<T>();
+            foreach (T element in myList)
+            {
+                if (comparison.Invoke(element))
+                {
+                    toBeRemoved.Add(element);
+                }
+            }
+            foreach (T element in toBeRemoved)
+            {
+                myList.Remove(element);
+            }
+        }
+
+        public static List<T> Merge<T>(this List<List<T>> list)
+        {
+            var merged = new List<T>();
+            list.ForEach(l => merged.AddRange(l));
+            return merged;
+        }
+
         public static T Clone<T>(this T controlToClone) where T : Control
         {
             T instance = DeepClone(controlToClone);
@@ -179,6 +214,21 @@ namespace ExcelToAzure
         public static T New<T>(this T obj) where T : new()
         {
             return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(obj));
+        }
+
+        public static string ToJSONString<T>(this T obj) where T : DBInterface
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+
+        public static string ToJSONCleanString<T>(this T obj) where T : DBInterface
+        {
+            return JsonConvert.SerializeObject(obj).RemoveJSONCharacters();
+        }
+
+        public static string RemoveJSONCharacters(this string text)
+        {
+            return text.Replace("{", "").Replace("}", "").Replace(":", " ").Replace("\"", " ").Replace("[", "").Replace("]", "").Trim();
         }
 
         public static bool EqualTo<T>(this T original, T comparer) where T : DBInterface

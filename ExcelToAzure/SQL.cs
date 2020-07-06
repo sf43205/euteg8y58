@@ -230,11 +230,11 @@ namespace ExcelToAzure
         private static List<string> QuerryRecords(string commandtext)
         {
             var count = QuerryGet("select count(id) as count from record ").ToInt();
-            Form1.Bar.SafeInvoke(x =>
+            LoadingData.Instance.SafeInvoke(x =>
             {
-                x.Maximum = count;
-                x.Value = 0;
-                x.Visible = true;
+                LoadingData.ProgressText = string.Format("Loading 0 out of {0} records...", count.ToString());
+                LoadingData.Maximum = count;
+                LoadingData.Value = 0;
             });
             var all = new List<string>();
             try
@@ -248,17 +248,24 @@ namespace ExcelToAzure
                         while (reader.Read())
                         {
                             all.Add((reader.GetString(0) ?? "{}").Replace("[", "").Replace("]", ""));
-                            Form1.Bar.SafeInvoke(x => x.Value++);
+                            Form1.Bar.SafeInvoke(x =>
+                            {
+                                LoadingData.Value++;
+                                LoadingData.ProgressText = string.Format("Loading {0} out of {1} records...", LoadingData.Value.ToString(), count.ToString());
+                            });
                         }
                     }
                     connection.Close();
                 }
+                LoadingData.Instance.SafeInvoke(x =>
+                {
+                    LoadingData.ProgressText = string.Format("Loaded {0} out of {1} records.", LoadingData.Value.ToString(), count.ToString());
+                });
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error executing {0}\nerror:{1}", commandtext, e.Message);
             }
-            Form1.Bar.SafeInvoke(x => x.Visible = false);
             return all;
         }
 
@@ -274,7 +281,7 @@ namespace ExcelToAzure
                                  "ELSE SELECT id FROM template WHERE level_id = @level_id and UPPER(code) = UPPER(@code) and UPPER(ut) = UPPER(@ut) and UPPER(description) = UPPER(@description) END";
             string locationtxt = "BEGIN IF NOT EXISTS (select id from location where project_id = project_id and UPPER(code) = UPPER(@code) and UPPER(name) = UPPER(@name)) " +
                                  "BEGIN INSERT INTO location(project_id, code, name, bsf) output inserted.id values(@project_id, @code, @name, @bsf) END " +
-                                 "ELSE select id from location where project_id = project_id and UPPER(code) = UPPER(@code) and UPPER(name) = UPPER(@name)) END ";
+                                 "ELSE select id from location where project_id = project_id and UPPER(code) = UPPER(@code) and UPPER(name) = UPPER(@name) END ";
             string pricetxt = "BEGIN IF NOT EXISTS (select template_id from product_price where phase_id = @phase_id and template_id = @template_id and project_id = project_id and cast(unit_price as decimal(16,7)) = cast(@unit_price as decimal(16,7))) " + 
                               "BEGIN INSERT INTO product_price(template_id, phase_id, project_id, unit_price) values(@template_id, @phase_id, @project_id, @unit_price) END END";
             string recordtxt = "BEGIN IF NOT EXISTS (select id from record where template_id = @template_id and project_id = @project_id and location_id = @location_id and phase_id = @phase_id and cast(qty as decimal(16,7)) = cast(@qty as decimal(16,7)) and cast(total as decimal(16,7)) = cast(@total as decimal(16,7))) " +
@@ -305,12 +312,12 @@ namespace ExcelToAzure
                                 {
                                     levelscmd.Parameters.AddWithValue("level1", record.template.level.level1);
                                     levelscmd.Parameters.AddWithValue("name1", record.template.level.name1);
-                                    levelscmd.Parameters.AddWithValue("level2", record.template.level.level1);
-                                    levelscmd.Parameters.AddWithValue("name2", record.template.level.name1);
-                                    levelscmd.Parameters.AddWithValue("level3", record.template.level.level1);
-                                    levelscmd.Parameters.AddWithValue("name3", record.template.level.name1);
-                                    levelscmd.Parameters.AddWithValue("level4", record.template.level.level1);
-                                    levelscmd.Parameters.AddWithValue("name4", record.template.level.name1);
+                                    levelscmd.Parameters.AddWithValue("level2", record.template.level.level2);
+                                    levelscmd.Parameters.AddWithValue("name2", record.template.level.name2);
+                                    levelscmd.Parameters.AddWithValue("level3", record.template.level.level3);
+                                    levelscmd.Parameters.AddWithValue("name3", record.template.level.name3);
+                                    levelscmd.Parameters.AddWithValue("level4", record.template.level.level4);
+                                    levelscmd.Parameters.AddWithValue("name4", record.template.level.name4);
 
                                     record.template.level.id = (int)levelscmd.ExecuteScalar();
                                     Console.WriteLine("Success levelscmd");
