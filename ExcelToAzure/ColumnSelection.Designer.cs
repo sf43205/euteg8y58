@@ -38,6 +38,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.back = new System.Windows.Forms.Button();
             this.next = new System.Windows.Forms.Button();
+            this.arrowlabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -87,6 +88,7 @@
             // panel2
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.Controls.Add(this.arrowlabel);
             this.panel2.Controls.Add(this.txtColumnName);
             this.panel2.Controls.Add(this.txtDataProperty);
             this.panel2.Location = new System.Drawing.Point(32, 117);
@@ -186,6 +188,18 @@
             this.next.UseVisualStyleBackColor = false;
             this.next.Click += new System.EventHandler(this.create_Click);
             // 
+            // arrowlabel
+            // 
+            this.arrowlabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.arrowlabel.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold);
+            this.arrowlabel.Location = new System.Drawing.Point(160, 0);
+            this.arrowlabel.Margin = new System.Windows.Forms.Padding(0);
+            this.arrowlabel.Name = "arrowlabel";
+            this.arrowlabel.Size = new System.Drawing.Size(280, 25);
+            this.arrowlabel.TabIndex = 7;
+            this.arrowlabel.Text = "-------------->";
+            this.arrowlabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // ColumnSelection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -223,5 +237,6 @@
         private System.Windows.Forms.Label txtDataProperty;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label txtColumnName;
+        private System.Windows.Forms.Label arrowlabel;
     }
 }

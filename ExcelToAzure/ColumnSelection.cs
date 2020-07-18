@@ -57,6 +57,10 @@ namespace ExcelToAzure
             for (int i = 0; i < rows.First().Length; i++)
             {
                 Headers.Add(new Header() { index = i, value = rows.First()[i] });
+                if (rows.Count() >= properties.Length)
+                {
+                    PairedHeaders[i] = new Header() { index = i, value = rows.First()[i] };
+                }
             }
             Headers = Headers.OrderBy(x => x.index).ToList();
             project = p.New();
@@ -166,7 +170,7 @@ namespace ExcelToAzure
         private void ListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             var Text = ListBox.SelectedItem as string;
-            this.Flash(140, 4, txtColumnName, txtDataProperty);
+            this.Flash(140, 3, arrowlabel);
             PairedHeaders[page] = Headers.Find(x => (x.index.ToString() + " " + x.value) == Text);
             SetListBox();
         }
