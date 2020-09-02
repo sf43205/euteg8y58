@@ -69,28 +69,28 @@ namespace ExcelToAzure
 
                 case Pages.Level1:
                     Stage = Pages.Level2;
-                    Current = Current.FindAll(x => checkedStrings.Any(s => s == string.Format("{0} {1}", x.template.level.level1, x.template.level.name1)));
+                    Current = Current.FindAll(x => checkedStrings.Any(s => s == string.Format("{0} {1}", x.template.level4.level3.level2.level1.code, x.template.level4.level3.level2.level1.description)));
                     searchBox.Text = "";
                     SetList();
                     break;
 
                 case Pages.Level2:
                     Stage = Pages.Level3;
-                    Current = Current.FindAll(x => checkedStrings.Any(s => s == string.Format("{0} {1}", x.template.level.level2, x.template.level.name2)));
+                    Current = Current.FindAll(x => checkedStrings.Any(s => s == string.Format("{0} {1}", x.template.level4.level3.level2.code, x.template.level4.level3.level2.description)));
                     searchBox.Text = "";
                     SetList();
                     break;
 
                 case Pages.Level3:
                     Stage = Pages.Level4;
-                    Current = Current.FindAll(x => checkedStrings.Any(s => s == string.Format("{0} {1}", x.template.level.level3, x.template.level.name3)));
+                    Current = Current.FindAll(x => checkedStrings.Any(s => s == string.Format("{0} {1}", x.template.level4.level3.code, x.template.level4.level3.description)));
                     searchBox.Text = "";
                     SetList();
                     break;
 
                 case Pages.Level4:
                     Stage = Pages.Template;
-                    Current = Current.FindAll(x => checkedStrings.Any(s => s == string.Format("{0} {1}", x.template.level.level4, x.template.level.name4)));
+                    Current = Current.FindAll(x => checkedStrings.Any(s => s == string.Format("{0} {1}", x.template.level4.code, x.template.level4.description)));
                     searchBox.Text = "";
                     SetList();
                     break;
@@ -103,7 +103,7 @@ namespace ExcelToAzure
                     break;
 
                 case Pages.Record:
-                    Data.Show(Current.FindAll(x => checkedStrings.Any(s => s == string.Format("{0} {1} {2}", x.id.ToString(), x.csi_code, x.trade_code))));
+                    Data.Show(Current.FindAll(x => checkedStrings.Any(s => s == string.Format("{0} {1} {2}", x.id.ToString(), x.csi_code.code, x.csi_code.trade_code.code))));
                     break;
             }
             UpdateSelectedLabel();
@@ -138,31 +138,31 @@ namespace ExcelToAzure
                     break;
 
                 case Pages.Level1:
-                    DataSource = search.Any() ? Current.FindAll(r => search.ToUpper().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList().Any(x => r.template.level.ToJSONCleanString().ToUpper().Contains(x))).ToList() : Current.ToList();
-                    DataSource = DataSource.DistinctBy(x => x.template.level.level1).ToList();
+                    DataSource = search.Any() ? Current.FindAll(r => search.ToUpper().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList().Any(x => r.template.level4.ToJSONCleanString().ToUpper().Contains(x))).ToList() : Current.ToList();
+                    DataSource = DataSource.DistinctBy(x => x.template.level4.level3.level2.level1.code).ToList();
                     checkedList.Items.Clear();
-                    DataSource.Select(d => d.template.level).ToList().ForEach(x => checkedList.Items.Add(string.Format("{0} {1}", x.level1, x.name1)));
+                    DataSource.Select(d => d.template.level4).ToList().ForEach(x => checkedList.Items.Add(string.Format("{0} {1}", x.level3.level2.level1.code, x.level3.level2.level1.description)));
                     break;
 
                 case Pages.Level2:
-                    DataSource = search.Any() ? Current.FindAll(r => search.ToUpper().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList().Any(x => r.template.level.ToJSONCleanString().ToUpper().Contains(x))).ToList() : Current.ToList();
-                    DataSource = DataSource.DistinctBy(x => x.template.level.level2).ToList();
+                    DataSource = search.Any() ? Current.FindAll(r => search.ToUpper().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList().Any(x => r.template.level4.ToJSONCleanString().ToUpper().Contains(x))).ToList() : Current.ToList();
+                    DataSource = DataSource.DistinctBy(x => x.template.level4.level3.level2.code).ToList();
                     checkedList.Items.Clear();
-                    DataSource.Select(d => d.template.level).ToList().ForEach(x => checkedList.Items.Add(string.Format("{0} {1}", x.level2, x.name2)));
+                    DataSource.Select(d => d.template.level4).ToList().ForEach(x => checkedList.Items.Add(string.Format("{0} {1}", x.level3.level2.code, x.level3.level2.description)));
                     break;
 
                 case Pages.Level3:
-                    DataSource = search.Any() ? Current.FindAll(r => search.ToUpper().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList().Any(x => r.template.level.ToJSONCleanString().ToUpper().Contains(x))).ToList() : Current.ToList();
-                    DataSource = DataSource.DistinctBy(x => x.template.level.level3).ToList();
+                    DataSource = search.Any() ? Current.FindAll(r => search.ToUpper().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList().Any(x => r.template.level4.ToJSONCleanString().ToUpper().Contains(x))).ToList() : Current.ToList();
+                    DataSource = DataSource.DistinctBy(x => x.template.level4.level3).ToList();
                     checkedList.Items.Clear();
-                    DataSource.Select(d => d.template.level).ToList().ForEach(x => checkedList.Items.Add(string.Format("{0} {1}", x.level3, x.name3)));
+                    DataSource.Select(d => d.template.level4).ToList().ForEach(x => checkedList.Items.Add(string.Format("{0} {1}", x.level3.code, x.level3.description)));
                     break;
 
                 case Pages.Level4:
-                    DataSource = search.Any() ? Current.FindAll(r => search.ToUpper().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList().Any(x => r.template.level.ToJSONCleanString().ToUpper().Contains(x))).ToList() : Current.ToList();
-                    DataSource = DataSource.DistinctBy(x => x.template.level.level4).ToList();
+                    DataSource = search.Any() ? Current.FindAll(r => search.ToUpper().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList().Any(x => r.template.level4.ToJSONCleanString().ToUpper().Contains(x))).ToList() : Current.ToList();
+                    DataSource = DataSource.DistinctBy(x => x.template.level4.code).ToList();
                     checkedList.Items.Clear();
-                    DataSource.Select(d => d.template.level).ToList().ForEach(x => checkedList.Items.Add(string.Format("{0} {1}", x.level4, x.name4)));
+                    DataSource.Select(d => d.template.level4).ToList().ForEach(x => checkedList.Items.Add(string.Format("{0} {1}", x.code, x.description)));
                     break;
 
                 case Pages.Template:
@@ -176,7 +176,7 @@ namespace ExcelToAzure
                     DataSource = search.Any() ? Current.FindAll(r => search.ToUpper().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList().Any(x => r.ToJSONCleanString().ToUpper().Contains(x))).ToList() : Current.ToList();
                     DataSource = DataSource.DistinctBy(x => x.id).ToList();
                     checkedList.Items.Clear();
-                    DataSource.ForEach(x => checkedList.Items.Add(string.Format("{0} {1} {2}", x.id, x.csi_code, x.trade_code)));
+                    DataSource.ForEach(x => checkedList.Items.Add(string.Format("{0} {1} {2}", x.id, x.csi_code.code, x.csi_code.trade_code.code)));
                     break;
             }
             results.Text = DataSource.Count().ToString() + " RESULTS";
@@ -226,43 +226,43 @@ namespace ExcelToAzure
                     SetList();
                     for (int i = 0; i < checkedList.Items.Count; i++)
                     {
-                        checkedList.SetItemCheckState(i, tocheck.Any(c => checkedList.Items[i].ToString().StartsWith(c.template.level.level1 + " ", StringComparison.CurrentCultureIgnoreCase)) ? CheckState.Checked : CheckState.Unchecked);
+                        checkedList.SetItemCheckState(i, tocheck.Any(c => checkedList.Items[i].ToString().StartsWith(c.template.level4.level3.level2.level1.code + " ", StringComparison.CurrentCultureIgnoreCase)) ? CheckState.Checked : CheckState.Unchecked);
                     }
                     break;
 
                 case Pages.Level3:
                     Stage = Pages.Level2;
-                    Current = Records.FindAll(x => Current.Any(c => c.template.level.level1 == x.template.level.level1)).ToList();
+                    Current = Records.FindAll(x => Current.Any(c => c.template.level4.level3.level2.level1.code == x.template.level4.level3.level2.level1.code)).ToList();
                     SetList();
                     for (int i = 0; i < checkedList.Items.Count; i++)
                     {
-                        checkedList.SetItemCheckState(i, tocheck.Any(c => checkedList.Items[i].ToString().StartsWith(c.template.level.level2 + " ", StringComparison.CurrentCultureIgnoreCase)) ? CheckState.Checked : CheckState.Unchecked);
+                        checkedList.SetItemCheckState(i, tocheck.Any(c => checkedList.Items[i].ToString().StartsWith(c.template.level4.level3.level2.code + " ", StringComparison.CurrentCultureIgnoreCase)) ? CheckState.Checked : CheckState.Unchecked);
                     }
                     break;
 
                 case Pages.Level4:
                     Stage = Pages.Level3;
-                    Current = Records.FindAll(x => Current.Any(c => c.template.level.level2 == x.template.level.level2)).ToList();
+                    Current = Records.FindAll(x => Current.Any(c => c.template.level4.level3.level2.code == x.template.level4.level3.level2.code)).ToList();
                     SetList();
                     for (int i = 0; i < checkedList.Items.Count; i++)
                     {
-                        checkedList.SetItemCheckState(i, tocheck.Any(c => checkedList.Items[i].ToString().StartsWith(c.template.level.level3 + " ", StringComparison.CurrentCultureIgnoreCase)) ? CheckState.Checked : CheckState.Unchecked);
+                        checkedList.SetItemCheckState(i, tocheck.Any(c => checkedList.Items[i].ToString().StartsWith(c.template.level4.level3.code + " ", StringComparison.CurrentCultureIgnoreCase)) ? CheckState.Checked : CheckState.Unchecked);
                     }
                     break;
 
                 case Pages.Template:
                     Stage = Pages.Level4;
-                    Current = Records.FindAll(x => Current.Any(c => c.template.level.level3 == x.template.level.level3)).ToList();
+                    Current = Records.FindAll(x => Current.Any(c => c.template.level4.level3.code == x.template.level4.level3.code)).ToList();
                     SetList();
                     for (int i = 0; i < checkedList.Items.Count; i++)
                     {
-                        checkedList.SetItemCheckState(i, tocheck.Any(c => checkedList.Items[i].ToString().StartsWith(c.template.level.level4 + " ", StringComparison.CurrentCultureIgnoreCase)) ? CheckState.Checked : CheckState.Unchecked);
+                        checkedList.SetItemCheckState(i, tocheck.Any(c => checkedList.Items[i].ToString().StartsWith(c.template.level4.code + " ", StringComparison.CurrentCultureIgnoreCase)) ? CheckState.Checked : CheckState.Unchecked);
                     }
                     break;
 
                 case Pages.Record:
                     Stage = Pages.Template;
-                    Current = Records.FindAll(x => Current.Any(c => c.template.level.level4 == x.template.level.level4)).ToList();
+                    Current = Records.FindAll(x => Current.Any(c => c.template.level4.code == x.template.level4.code)).ToList();
                     SetList();
                     for (int i = 0; i < checkedList.Items.Count; i++)
                     {

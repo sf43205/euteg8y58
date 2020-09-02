@@ -139,7 +139,7 @@ namespace ExcelToAzure
             {
                 get
                 {
-                    data.bsf = bsf.ToDecimal();
+                    data.sf = bsf.ToDecimal();
                     return data.New();
                 }
                 set
@@ -148,7 +148,7 @@ namespace ExcelToAzure
                     id.Text = data.id.ToString();
                     name.Text = data.name;
                     code.Text = data.code;
-                    bsf.Text = data.bsf.ToString();
+                    bsf.Text = data.sf.ToString();
                 }
             }
                 

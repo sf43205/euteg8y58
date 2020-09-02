@@ -116,38 +116,38 @@ namespace ExcelToAzure
                     break;
 
                 case Properties.Name1:
-                    var temp1 = Records.Select(x => x.template.level).DistinctBy(p => p.level1).ToList();
+                    var temp1 = Records.Select(x => x.template.level4.level3.level2.level1).DistinctBy(p => p.code).ToList();
                     for (int i = 0; i < temp1.Count(); i++)
                     {
-                        pointsData.Add(Records.FindAll(r => r.template.level.level1 == temp1[i].level1));
-                        seriesArray.Add(temp1[i].name1);
+                        pointsData.Add(Records.FindAll(r => r.template.level4.level3.level2.level1.code == temp1[i].code));
+                        seriesArray.Add(temp1[i].description);
                     }
                     break;
 
                 case Properties.Name2:
-                    var temp2 = Records.Select(x => x.template.level).DistinctBy(p => p.level2).ToList();
+                    var temp2 = Records.Select(x => x.template.level4.level3.level2).DistinctBy(p => p.code).ToList();
                     for (int i = 0; i < temp2.Count(); i++)
                     {
-                        pointsData.Add(Records.FindAll(r => r.template.level.level2 == temp2[i].level2));
-                        seriesArray.Add(temp2[i].name2);
+                        pointsData.Add(Records.FindAll(r => r.template.level4.level3.level2.code == temp2[i].code));
+                        seriesArray.Add(temp2[i].description);
                     }
                     break;
 
                 case Properties.Name3:
-                    var temp3 = Records.Select(x => x.template.level).DistinctBy(p => p.level3).ToList();
+                    var temp3 = Records.Select(x => x.template.level4.level3).DistinctBy(p => p.code).ToList();
                     for (int i = 0; i < temp3.Count(); i++)
                     {
-                        pointsData.Add(Records.FindAll(r => r.template.level.level3 == temp3[i].level3));
-                        seriesArray.Add(temp3[i].name3);
+                        pointsData.Add(Records.FindAll(r => r.template.level4.level3.code == temp3[i].code));
+                        seriesArray.Add(temp3[i].description);
                     }
                     break;
 
                 case Properties.Name4:
-                    var temp4 = Records.Select(x => x.template.level).DistinctBy(p => p.level4).ToList();
+                    var temp4 = Records.Select(x => x.template.level4).DistinctBy(p => p.code).ToList();
                     for (int i = 0; i < temp4.Count(); i++)
                     {
-                        pointsData.Add(Records.FindAll(r => r.template.level.level4 == temp4[i].level4));
-                        seriesArray.Add(temp4[i].name4);
+                        pointsData.Add(Records.FindAll(r => r.template.level4.code == temp4[i].code));
+                        seriesArray.Add(temp4[i].description);
                     }
                     break;
 
@@ -165,7 +165,7 @@ namespace ExcelToAzure
                     for (int i = 0; i < tempR.Count(); i++)
                     {
                         pointsData.Add(Records.FindAll(r => r.id == tempR[i].id));
-                        seriesArray.Add(tempR[i].csi_code);
+                        seriesArray.Add(tempR[i].csi_code.code);
                     }
                     break;
             }
@@ -232,7 +232,7 @@ namespace ExcelToAzure
                 {
                     case Numbers.LocationBSF:
                         var tempL = records.Select(x => x.location).DistinctBy(l => l.id).ToList();
-                        keys.Add(new KeyValuePair<string, object>(number.ToString(), tempL.Sum(t => t.bsf)));
+                        keys.Add(new KeyValuePair<string, object>(number.ToString(), tempL.Sum(t => t.sf)));
                         break;
 
                     case Numbers.ProjectGSF:
@@ -249,7 +249,7 @@ namespace ExcelToAzure
                         break;
 
                     case Numbers.UnitPrice:
-                        keys.Add(new KeyValuePair<string, object>(number.ToString(), records.Sum(t => t.price)));
+                        keys.Add(new KeyValuePair<string, object>(number.ToString(), records.Sum(t => t.unit_price)));
                         break;
 
                     case Numbers.TotalPrice_per_ProjectGSF:
@@ -259,7 +259,7 @@ namespace ExcelToAzure
 
                     case Numbers.TotalPrice_per_LocationBSF:
                         var tempPL = records.Select(x => x.location).DistinctBy(l => l.id).ToList();
-                        keys.Add(new KeyValuePair<string, object>(number.ToString(), Divide(records.Sum(t => t.total), tempPL.Sum(t => t.bsf))));
+                        keys.Add(new KeyValuePair<string, object>(number.ToString(), Divide(records.Sum(t => t.total), tempPL.Sum(t => t.sf))));
                         break;
                 }
             });
@@ -284,19 +284,19 @@ namespace ExcelToAzure
                         break;
 
                     case Properties.Name1:
-                        keys.Add(new KeyValuePair<string, object>(property.ToString(), record.template.level.name1));
+                        keys.Add(new KeyValuePair<string, object>(property.ToString(), record.template.level4.level3.level2.level1.description));
                         break;
 
                     case Properties.Name2:
-                        keys.Add(new KeyValuePair<string, object>(property.ToString(), record.template.level.name2));
+                        keys.Add(new KeyValuePair<string, object>(property.ToString(), record.template.level4.level3.level2.description));
                         break;
 
                     case Properties.Name3:
-                        keys.Add(new KeyValuePair<string, object>(property.ToString(), record.template.level.name3));
+                        keys.Add(new KeyValuePair<string, object>(property.ToString(), record.template.level4.level3.description));
                         break;
 
                     case Properties.Name4:
-                        keys.Add(new KeyValuePair<string, object>(property.ToString(), record.template.level.name4));
+                        keys.Add(new KeyValuePair<string, object>(property.ToString(), record.template.level4.description));
                         break;
 
                     case Properties.Phase:

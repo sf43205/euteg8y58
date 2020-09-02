@@ -55,7 +55,7 @@ namespace ExcelToAzure
                 Phase.GetAll((all) =>
                 {
                     ListBox.Items.Clear();
-                    all.ForEach(x => ListBox.Items.Add(x.phase.ToUpper()));
+                    all.Select(x => x.phase).Distinct().ToList().ForEach(x => ListBox.Items.Add(x.ToUpper()));
                 });
             }
         }
@@ -67,7 +67,7 @@ namespace ExcelToAzure
 
         private void create_Click(object sender, EventArgs e)
         {
-            var phase = new Phase() { phase = name.Text.Trim().ToUpper() };
+            var phase = new Phase() { phase = name.Text.Trim().ToUpper(), project = project.New() };
             if (create.Text == "Saving..." || !phase.phase.Any()) return;
             create.Text = "Saving...";
             create.BackColor = Color.Gold;
@@ -81,7 +81,12 @@ namespace ExcelToAzure
                     try
                     {
                         var filePath = openFileDialog1.FileName;
-                        Xls.GetArrayFromFile(filePath, (rowsresult) => ColumnSelection.Open(rowsresult, project, updated));
+                        Xls.GetArrayFromFile(filePath, (rowsresult) =>
+                        {
+                            var withoutlastrow = rowsresult.ToList();
+                            withoutlastrow.Remove(withoutlastrow.Last());
+                            ColumnSelection.Open(withoutlastrow, project, updated);
+                        });
                     }
                     catch (SecurityException ex)
                     {

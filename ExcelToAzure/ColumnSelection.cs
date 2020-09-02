@@ -113,20 +113,20 @@ namespace ExcelToAzure
             var result = MessageBox.Show(text, "Is everything correct?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3);
             if (result == DialogResult.Yes)
             {
-                InsertDataToDB(PrepData());
+                PrepData();
                 Form1.Navigate(Form1.ImportPage);
                 //Xls.ShowDataInNewApp(PrepData());
             }
         }
 
-        private async void InsertDataToDB(List<Record> allrecs)
+        private async void InsertDataToDB(List<Record> allrecs, List<Location> locations, List<Level1> level1s, List<Level2> level2s, List<Level3> level3s, List<Level4> level4s)
         {
             var success = false;
             while (Form1.Bar.Visible)
             {
                 await Task.Delay(1000);
             }
-            await Task.Run(() => success = SQL.ImportNewData(allrecs));
+            await Task.Run(() => success = SQL.ImportNewData(allrecs, locations, level1s, level2s, level3s, level4s));
             if (success)
                 MessageBox.Show("Successfully imported data");
             else
@@ -134,37 +134,127 @@ namespace ExcelToAzure
             Form1.Main.SafeInvoke(x => LocationsPage.Show(project));
         }
 
-        List<Record> PrepData()
+        void PrepData()
         {
+            phase.project = project.New();
             List<Record> records = new List<Record>();
-            for (int iRow = 0; iRow < Rows.Count(); iRow++)
+            var recordRows = Rows.FindAll(x => x[PairedHeaders[0].index].ToInt() == 6).ToList();
+            var locationRows = Rows.FindAll(x => x[PairedHeaders[0].index].ToInt() == 1).ToList();
+            var level1Rows = Rows.FindAll(x => x[PairedHeaders[0].index].ToInt() == 2).ToList();
+            var level2Rows = Rows.FindAll(x => x[PairedHeaders[0].index].ToInt() == 3).ToList();
+            var level3Rows = Rows.FindAll(x => x[PairedHeaders[0].index].ToInt() == 4).ToList();
+            var level4Rows = Rows.FindAll(x => x[PairedHeaders[0].index].ToInt() == 5).ToList();
+
+            List<Location> locations = new List<Location>();
+            List<Level1> level1s = new List<Level1>();
+            List<Level2> level2s = new List<Level2>();
+            List<Level3> level3s = new List<Level3>();
+            List<Level4> level4s = new List<Level4>();
+
+            locationRows.ForEach(x =>
+            {
+                var loc = new Location()
+                {
+                    code = x[PairedHeaders[(int)columns.LocCode].index],
+                    name = x[PairedHeaders[(int)columns.LocationName].index],
+                    sf = x[PairedHeaders[(int)columns.qty].index].ToDecimal(),
+                    project = project.New()
+                };
+                locations.Add(loc);
+            });
+
+            level1Rows.ForEach(x =>
+            {
+                var lev = new Level1()
+                {
+                    code = x[PairedHeaders[(int)columns.LOD1Code].index],
+                    description = x[PairedHeaders[(int)columns.LOD1Name].index],
+                    Phase_UOM_qty = (phase.New(), x[PairedHeaders[(int)columns.UOM].index], x[PairedHeaders[(int)columns.qty].index].ToDecimal()),
+                    project = project.New()
+                };
+                level1s.Add(lev);
+            });
+
+            level2Rows.ForEach(x =>
+            {
+                var lev = new Level2()
+                {
+                    code = x[PairedHeaders[(int)columns.LOD2Code].index],
+                    description = x[PairedHeaders[(int)columns.LOD2Name].index],
+                    Phase_UOM_qty = (phase.New(), x[PairedHeaders[(int)columns.UOM].index], x[PairedHeaders[(int)columns.qty].index].ToDecimal()),
+                    level1 = level1s.Find(l1 => l1.code == x[PairedHeaders[(int)columns.LOD1Code].index])
+                };
+                level2s.Add(lev);
+            });
+
+            level3Rows.ForEach(x =>
+            {
+                var lev = new Level3()
+                {
+                    code = x[PairedHeaders[(int)columns.LOD3Code].index],
+                    description = x[PairedHeaders[(int)columns.LOD3Name].index],
+                    Phase_UOM_qty = (phase.New(), x[PairedHeaders[(int)columns.UOM].index], x[PairedHeaders[(int)columns.qty].index].ToDecimal()),
+                    level2 = level2s.Find(l2 => l2.code == x[PairedHeaders[(int)columns.LOD2Code].index])
+                };
+                level3s.Add(lev);
+            });
+
+            level4Rows.ForEach(x =>
+            {
+                var lev = new Level4()
+                {
+                    code = x[PairedHeaders[(int)columns.LOD4Code].index],
+                    description = x[PairedHeaders[(int)columns.LOD4Name].index],
+                    Phase_UOM_qty = (phase.New(), x[PairedHeaders[(int)columns.UOM].index], x[PairedHeaders[(int)columns.qty].index].ToDecimal()),
+                    level3 = level3s.Find(l3 => l3.code == x[PairedHeaders[(int)columns.LOD3Code].index])
+                };
+                level4s.Add(lev);
+            });
+
+            for (int iRow = 0; iRow < recordRows.Count(); iRow++)
             {
                 records.Add(new Record());
-                records[iRow].location.project = project.New();
+                var lev4 = new Level4()
+                {
+                    code = recordRows[iRow][PairedHeaders[(int)columns.LOD4Code].index],
+                    description = recordRows[iRow][PairedHeaders[(int)columns.LOD4Name].index],
+                    level3 = new Level3()
+                    {
+                        code = recordRows[iRow][PairedHeaders[(int)columns.LOD3Code].index],
+                        description = recordRows[iRow][PairedHeaders[(int)columns.LOD3Name].index],
+                        level2 = new Level2()
+                        {
+                            code = recordRows[iRow][PairedHeaders[(int)columns.LOD2Code].index],
+                            description = recordRows[iRow][PairedHeaders[(int)columns.LOD2Name].index],
+                            level1 = new Level1()
+                            {
+                                code = recordRows[iRow][PairedHeaders[(int)columns.LOD1Code].index],
+                                description = recordRows[iRow][PairedHeaders[(int)columns.LOD1Name].index],
+                                project = project.New()
+                            }
+                        }
+                    }
+                };
+                records[iRow].location = locations.Find(x => x.code == recordRows[iRow][PairedHeaders[(int)columns.LocCode].index]);
                 records[iRow].phase = phase.New();
-                records[iRow].location.code = Rows[iRow][PairedHeaders[0].index];
-                records[iRow].location.name = Rows[iRow][PairedHeaders[1].index];
-                records[iRow].location.bsf = 0;
-                records[iRow].template.level.level1 = Rows[iRow][PairedHeaders[2].index];
-                records[iRow].template.level.name1 = Rows[iRow][PairedHeaders[3].index];
-                records[iRow].template.level.level2 = Rows[iRow][PairedHeaders[4].index];
-                records[iRow].template.level.name2 = Rows[iRow][PairedHeaders[5].index];
-                records[iRow].template.level.level3 = Rows[iRow][PairedHeaders[6].index];
-                records[iRow].template.level.name3 = Rows[iRow][PairedHeaders[7].index];
-                records[iRow].template.level.level4 = Rows[iRow][PairedHeaders[8].index];
-                records[iRow].template.level.name4 = Rows[iRow][PairedHeaders[9].index];
-                records[iRow].template.code = Rows[iRow][PairedHeaders[10].index];
-                records[iRow].template.description = Rows[iRow][PairedHeaders[11].index];
-                records[iRow].qty = Rows[iRow][PairedHeaders[12].index].ToDecimal();
-                records[iRow].template.ut = Rows[iRow][PairedHeaders[13].index];
-                records[iRow].price = Rows[iRow][PairedHeaders[14].index].ToDecimal();
-                records[iRow].total = Rows[iRow][PairedHeaders[15].index].ToDecimal();
-                records[iRow].comments = Rows[iRow][PairedHeaders[16].index];
-                records[iRow].csi_code = Rows[iRow][PairedHeaders[17].index];
-                records[iRow].trade_code = Rows[iRow][PairedHeaders[18].index];
-                records[iRow].estimate_category = Rows[iRow][PairedHeaders[19].index];
+                records[iRow].template.description = recordRows[iRow][PairedHeaders[(int)columns.Description].index];
+                records[iRow].template.code = recordRows[iRow][PairedHeaders[(int)columns.Code].index];
+                records[iRow].template.ut = recordRows[iRow][PairedHeaders[(int)columns.UOM].index];
+                records[iRow].template.level4 = lev4;
+                records[iRow].qty = recordRows[iRow][PairedHeaders[(int)columns.qty].index].ToDecimal();
+                records[iRow].total = recordRows[iRow][PairedHeaders[(int)columns.Extension].index].ToDecimal();
+                records[iRow].comments = recordRows[iRow][PairedHeaders[(int)columns.comments].index];
+                records[iRow].csi_code = new CSICode() 
+                { 
+                    code = recordRows[iRow][PairedHeaders[(int)columns.csi_code].index],
+                    trade_code = new TradeCode()
+                    {
+                        code = recordRows[iRow][PairedHeaders[(int)columns.trade_code].index]
+                    }
+                };
+                records[iRow].estimate_category = recordRows[iRow][PairedHeaders[(int)columns.estimate_category].index];
             }
-            return records;
+            InsertDataToDB(records, locations, level1s, level2s, level3s, level4s);
         }
 
         private void ListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -189,27 +279,52 @@ namespace ExcelToAzure
 
         string[] properties = new string[]
         {
-            "location.code",
-            "location.name",
-            //"location.bsf",
-            "level1",
-            "name1",
-            "level2",
-            "name2",
-            "level3",
-            "name3",
-            "level4",
-            "name4",
-            "template.code",
-            "description",
+            "N",
+            "LocCode",
+            "LocationName",
+            "LOD1Code",
+            "LOD1Name",
+            "LOD2Code",
+            "LOD2Name",
+            "LOD3Code",
+            "LOD3Name",
+            "LOD4Code",
+            "LOD4Name",
+            "Code",
+            "Description",
             "qty",
-            "ut",
-            "price",
-            "total",
+            "UOM",
+            "UnitPrice",
+            "Extension",
             "comments",
             "csi_code",
             "trade_code",
             "estimate_category"
+        };
+
+        enum columns: int
+        { 
+            N,
+            LocCode,
+            LocationName,
+            LOD1Code,
+            LOD1Name,
+            LOD2Code,
+            LOD2Name,
+            LOD3Code,
+            LOD3Name,
+            LOD4Code,
+            LOD4Name,
+            Code,
+            Description,
+            qty,
+            UOM,
+            UnitPrice,
+            Extension,
+            comments,
+            csi_code,
+            trade_code,
+            estimate_category
         };
     }
 }

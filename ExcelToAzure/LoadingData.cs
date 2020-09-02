@@ -31,6 +31,7 @@ namespace ExcelToAzure
         static bool showing = false;
         public static void Show(Action Loading, Action nextAction)
         {
+            MessageBox.Show("Data exporting and analytics not ready yet!");
             if (Instance == null)
                 Instance = new LoadingData();
             Form1.Navigate(Instance);

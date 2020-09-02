@@ -12,6 +12,20 @@ namespace ExcelToAzure
     public interface DBInterface
     {
     }
+
+    public class User : DBInterface
+    {
+        [JsonProperty("id")]
+        public int id = -1;
+        [JsonProperty("active")]
+        public bool active = true;
+        [JsonProperty("name")]
+        public string name = "";
+        [JsonProperty("password")]
+        public string password = "";
+
+        public static User LoggedIn = new User();
+    }
     public class Project : DBInterface
     {
         [JsonProperty("id")]
@@ -28,6 +42,8 @@ namespace ExcelToAzure
         public decimal duration = 0;
         [JsonProperty("gsf")]
         public decimal gsf = 0;
+        [JsonProperty("properties")]
+        public string properties = "";
 
         public Project()
         {
@@ -63,6 +79,8 @@ namespace ExcelToAzure
         public int id = -1;
         [JsonProperty("phase")]
         public string phase = "";
+        [JsonProperty("project")]
+        public Project project = new Project();
 
         public Phase()
         {
@@ -83,32 +101,76 @@ namespace ExcelToAzure
         }
     }
 
-    public class Level : DBInterface
+    public class Level1 : DBInterface
     {
         [JsonProperty("id")]
         public int id = -1;
-        [JsonProperty("name1")]
-        public string name1 = "";
-        [JsonProperty("level1")]
-        public string level1 = "";
-        [JsonProperty("name2")]
-        public string name2 = "";
-        [JsonProperty("level2")]
-        public string level2 = "";
-        [JsonProperty("name3")]
-        public string name3 = "";
-        [JsonProperty("level3")]
-        public string level3 = "";
-        [JsonProperty("name4")]
-        public string name4 = "";
-        [JsonProperty("level4")]
-        public string level4 = "";
-
-        public Level()
+        [JsonProperty("description")]
+        public string description = "";
+        [JsonProperty("code")]
+        public string code = "";
+        [JsonProperty("project")]
+        public Project project = new Project();
+        [JsonIgnore]
+        public (Phase, string, decimal) Phase_UOM_qty = (new Phase(), "", 0);
+        public Level1()
         { 
         }
     }
 
+    public class Level2 : DBInterface
+    {
+        [JsonProperty("id")]
+        public int id = -1;
+        [JsonProperty("level1")]
+        public Level1 level1 = new Level1();
+        [JsonProperty("description")]
+        public string description = "";
+        [JsonProperty("code")]
+        public string code = "";
+        [JsonIgnore]
+        public (Phase, string, decimal) Phase_UOM_qty = (new Phase(), "", 0);
+
+        public Level2()
+        {
+        }
+    }
+
+    public class Level3 : DBInterface
+    {
+        [JsonProperty("id")]
+        public int id = -1;
+        [JsonProperty("level2")]
+        public Level2 level2 = new Level2();
+        [JsonProperty("description")]
+        public string description = "";
+        [JsonProperty("code")]
+        public string code = "";
+        [JsonIgnore]
+        public (Phase, string, decimal) Phase_UOM_qty = (new Phase(), "", 0);
+
+        public Level3()
+        {
+        }
+    }
+
+    public class Level4 : DBInterface
+    {
+        [JsonProperty("id")]
+        public int id = -1;
+        [JsonProperty("level3")]
+        public Level3 level3 = new Level3();
+        [JsonProperty("description")]
+        public string description = "";
+        [JsonProperty("code")]
+        public string code = "";
+        [JsonIgnore]
+        public (Phase, string, decimal) Phase_UOM_qty = (new Phase(), "", 0);
+
+        public Level4()
+        {
+        }
+    }
     public class Location : DBInterface
     {
         [JsonProperty("id")]
@@ -117,8 +179,8 @@ namespace ExcelToAzure
         public string name = "";
         [JsonProperty("code")]
         public string code = "";
-        [JsonProperty("bsf")]
-        public decimal bsf = 0;
+        [JsonProperty("sf")]
+        public decimal sf = 0;
         [JsonProperty("project")]
         public Project project = new Project();
 
@@ -128,7 +190,7 @@ namespace ExcelToAzure
 
         public void Update()
         {
-            string command = "update location set bsf = " + bsf.ToString() + " where id = " + id.ToString() + ";";
+            string command = "update location set sf = " + sf.ToString() + " where id = " + id.ToString() + ";";
             SQL.QuerryUpdate(command);
         }
     }
@@ -143,28 +205,42 @@ namespace ExcelToAzure
         public string description = "";
         [JsonProperty("ut")]
         public string ut = "";
-        [JsonProperty("level")]
-        public Level level = new Level();
+        [JsonProperty("level4")]
+        public Level4 level4 = new Level4();
 
         public Template()
         { 
         }
     }
 
-    public class ProductPrice : DBInterface
+    public class TradeCode : DBInterface
     {
-        [JsonProperty("template")]
-        public Template template = new Template();
-        [JsonProperty("project")]
-        public Project project = new Project();
-        [JsonProperty("phase")]
-        public Phase phase = new Phase();
-        [JsonProperty("unit_price")]
-        public decimal unit_price = 0;
+        [JsonProperty("id")]
+        public int id = -1;
+        [JsonProperty("code")]
+        public string code = "";
+    }
 
-        public ProductPrice()
-        { 
-        }
+    public class CSICode : DBInterface
+    {
+        [JsonProperty("id")]
+        public int id = -1;
+        [JsonProperty("code")]
+        public string code = "";
+        [JsonProperty("trade_code")]
+        public TradeCode trade_code = new TradeCode();
+    }
+
+    public class Batch : DBInterface
+    {
+        [JsonProperty("id")]
+        public int id = -1;
+        [JsonProperty("active")]
+        public bool active = true;
+        [JsonProperty("time")]
+        public DateTime trade_code = new DateTime();
+        [JsonProperty("id")]
+        public User user = new User();
     }
 
     public class Record : DBInterface
@@ -173,25 +249,23 @@ namespace ExcelToAzure
         public int id = -1;
         [JsonProperty("template")]
         public Template template = new Template();
-        [JsonProperty("total")]
+        [JsonProperty("extension")]
         public decimal total = 0;
         [JsonProperty("qty")]
         public decimal qty = 0;
         [JsonProperty("comments")]
         public string comments = "";
         [JsonProperty("csi_code")]
-        public string csi_code = "";
-        [JsonProperty("trade_code")]
-        public string trade_code = "";
+        public CSICode csi_code = new CSICode();
         [JsonProperty("estimate_category")]
         public string estimate_category = "";
         [JsonProperty("location")]
         public Location location = new Location();
         [JsonProperty("phase")]
         public Phase phase = new Phase();
-        [JsonProperty("price")]
-        public decimal price = 0;
-        [JsonProperty("project_id")]
+        [JsonIgnore]
+        public decimal unit_price => qty == 0 ? 0 : total / qty;
+        [JsonIgnore]
         public int project_id { get => location.project.id; set => location.project.id = value; }
 
         public Record()
